@@ -2,8 +2,9 @@ const isDev = process.env.NODE_ENV === "development";
 const path = require("path");
 
 module.exports = {
-  mode: isDev ? "development" : "production",
-  entry: "./client/popup/index.js",
+  // mode: isDev ? "development" : "production",
+  mode: "development",
+  entry: ["babel-polyfill", "./client/popup/index.js"],
   output: {
     path: __dirname,
     filename: "./public/js/popup.js"

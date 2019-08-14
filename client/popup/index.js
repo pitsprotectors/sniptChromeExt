@@ -1,14 +1,33 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
+import ApolloClient from "apollo-boost";
+import gql from "graphql-tag";
+import "babel-polyfill";
+
+const GET_PROJECTS = gql`
+  query {
+    user(id: 1) {
+      projects {
+        name
+        id
+      }
+    }
+  }
+`;
+
+const client = new ApolloClient({
+  uri: "http://localhost:4000/graphql"
+});
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentHighlight: ""
+      currentHighlight: "",
+      projects: []
     };
     this.syncStorageToState = this.syncStorageToState.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
 
   syncStorageToState() {
@@ -18,11 +37,30 @@ class App extends Component {
     });
   }
 
-  handleSave() {
+  async handleSave() {
     //send the currentHighlight on the state to the database
+    const CREATE_SNIPPET = gql`
+    mutation{
+      createSnippet(questionId: ${1}, content: "${
+      this.state.currentHighlight
+    }", url: "www.google.com"){
+      id
+    }
+    }
+`;
+    const { data } = await client.mutate({
+      mutation: CREATE_SNIPPET
+    });
+    this.setState({ currentHighlight: "" });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const { data } = await client.query({
+      query: GET_PROJECTS
+    });
+    this.setState({
+      projects: data.user.projects
+    });
     document.addEventListener(
       "DOMContentLoaded",
       this.syncStorageToState(),
@@ -39,7 +77,7 @@ class App extends Component {
     return (
       <div>
         <h2>Hello Extension</h2>
-        <h4>Question: How do I make this damn extension work?</h4>
+        <h4>Question: How do I make this extension work?</h4>
         <div>Snippet: {this.state.currentHighlight}</div>
         <button onClick={this.handleSave} style={{ marginTop: "1rem" }}>
           Save

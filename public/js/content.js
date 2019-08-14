@@ -12,6 +12,6 @@ function getSelectedText() {
   }
 }
 
-console.log("is this damn file running?");
+console.log("is this file running?");
 
 document.onmouseup = getSelectedText;
