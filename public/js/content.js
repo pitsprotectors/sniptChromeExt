@@ -7,7 +7,7 @@ function getSelectedText() {
       .trim().length
   ) {
     content = window.getSelection().toString();
-    console.log(content);
+    console.log(content);    
     chrome.storage.sync.set({ content });
   }
 }
