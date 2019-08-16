@@ -40,7 +40,6 @@ class App extends Component {
   syncStorageToState() {
     let bgpage = chrome.extension.getBackgroundPage();
     let snipts = bgpage.snipts;
-    console.log(snipts)
     this.setState({currentHighlight:snipts})
   }
 //////////////////////////////////////////////////
@@ -62,11 +61,13 @@ class App extends Component {
       });
       console.log(RES)
       newQuestionId= +RES.data.createQuestion.id
-    }else{
+    }
+    else{
       newQuestionId= +this.state.selectedQuestion
     }
-    
-    for(let i=0; i<this.state.currentHighlight; i++){
+    console.log(this.state.currentHighlight)
+    for(let i=0; i<this.state.currentHighlight.length; i++){
+      console.log("currentHighlight: ", this.state.currentHighlight[i])
       const CREATE_SNIPPET = gql`
         mutation{
           createSnippet(questionId: ${newQuestionId}, content: "${this.state.currentHighlight[i]}", url: "www.google.com"){
@@ -77,7 +78,10 @@ class App extends Component {
       const { data } = await client.mutate({
         mutation: CREATE_SNIPPET
       });
+      console.log("data: ", data)
     }
+
+    chrome.runtime.sendMessage({text: "clear"});
     this.setState({ currentHighlight: "" });
   }
 //////////////////////////////////////////////////

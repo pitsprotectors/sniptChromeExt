@@ -14,3 +14,11 @@ chrome.contextMenus.onClicked.addListener(function(clickData){
     window.snipts.push(clickData.selectionText)
   }
 })
+
+chrome.runtime.onMessage.addListener(receiver);
+
+function receiver(request, sender, sendResponse) {
+  if (request.text==="clear"){
+    window.snipts=[]
+  }
+}
