@@ -1,0 +1,35 @@
+@import '~semantic-ui-css/semantic.css';
+.footer-container {
+  opacity: 0;
+  background-color: black;
+  padding: 1rem;
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  text-align: center;
+  z-index: 2;
+  transition: all 0.7s;
+  color: white
+}
+
+.footer-container.active {
+  opacity: 1;
+  transition: all 0.7s
+}
+
+.snippet-html {
+  background-image: linear-gradient(rgba(255, 0, 0, 0), rgba(255, 0, 0, 0), rgba(255, 0, 0, 0), rgba(0, 0, 0, 0.5));
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  bottom: 0;
+}
+
+.snippet-html.inactive {
+  display: none
+}
+
+.question-form {
+  background-color: white;
+  border-radius: 2rem;
+}

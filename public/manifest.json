@@ -1,7 +1,7 @@
 {
-  "name": "testing",
+  "name": "Snippet Chrome Extension",
   "version": "1.0",
-  "description": "yoyoyo",
+  "description": "Next-generation spaced repetition learning assistant",
   "permissions": ["storage", "activeTab", "contextMenus"],
   "browser_action": {
     "default_popup": "popup.html"
@@ -23,15 +23,18 @@
       }
     }
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["js/content.js"]
-    }
-  ],
   "background": {
     "scripts": ["js/background.js"],
     "persistent": false
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["css/content.css"],
+      "js": ["js/content.js"],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": ["test.html"],
   "manifest_version": 2
 }

@@ -14,10 +14,16 @@ chrome.contextMenus.onClicked.addListener(function(clickData) {
   }
 });
 
-chrome.runtime.onMessage.addListener(receiver);
+// chrome.runtime.onMessage.addListener(receiver);
 
-function receiver(request, sender, sendResponse) {
-  if (request.text === "clear") {
-    window.snippetsArray = [];
-  }
-}
+// function receiver(request, sender, sendResponse) {
+// if ((request.text = "getSnippets")) {
+//   sendResponse({ snippetsArray: window.snippetsArray });
+// }
+// if (request.text === "clear") {
+//   window.snippetsArray = [];
+// }
+// if (request.text === "footer") {
+//   chrome.tabs.executeScript({ file: "js/content.js" });
+// }
+// }
