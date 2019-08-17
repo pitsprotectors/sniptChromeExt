@@ -5,6 +5,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 import { ApolloProvider } from "@apollo/react-hooks";
 import App from "./app";
+
 if (!global._babelPolyfill) {
   require("babel-polyfill");
 }
@@ -37,6 +38,7 @@ body.appendChild(iframe);
 
 console.log(iframe);
 chrome.runtime.onMessage.addListener(receiver);
+chrome.storage.sync.set({ key: "hello" });
 
 // receiving message from CE upon popup
 function receiver(request, sender, sendResponse) {

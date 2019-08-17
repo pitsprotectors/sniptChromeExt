@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
+import { Button } from "semantic-ui-react";
 
 const CREATE_QUESTION = gql`
   mutation CreateNewQuestion($projectId: ID!, $content: String!) {
@@ -39,6 +40,7 @@ const QuestionCreator = ({ setAppStatus, setCurrentQuestion }) => {
           onChange={e => setNewQuestion(e.target.value)}
         />
         <button type="submit">CREATE</button>
+        <Button>HELLO BUTTON</Button>
       </form>
       {newQuestion}
     </div>
