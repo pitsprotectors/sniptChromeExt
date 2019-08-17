@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
+import { Input, Container, Header, Button, Divider, Segment, List} from 'semantic-ui-react'
 
 import "babel-polyfill";
 
@@ -127,16 +128,18 @@ class App extends Component {
     return (
       <div>
         <form onSubmit={this.handleSave}>
+
           <label>Project Name:</label>
-          
+
           <select onChange={this.onSelect}>
             <option value="General">------</option>
             {this.state.projects.length && this.state.projects.map((project)=>{
               return <option name={project.name} key={project.id} value={project.id}>{project.name}</option>
             })}
           </select>
-          
-          
+          <Divider hidden />
+
+
           <div>
            <label>Question:</label>
             <select onChange={this.onChange}>
@@ -148,25 +151,31 @@ class App extends Component {
               })
               }
             </select>
+            <Divider hidden />
             {
               this.state.selectedQuestion==="new"&&
-              <input type="text" id="myText"></input> 
-            } 
+              <Input type="text" id="myText"></Input>
+            }
           </div>
-          
-          
+            <Divider hidden />
+
           <div>
             <label>SNIPTS:</label>
             {this.state.currentHighlight.map && this.state.currentHighlight.map((snipt)=>{
               return(
-                  <p>
+                <List.Item as='a'>
+                  <Container text>
                   Snipt: {snipt}
-                  <button>Delete</button>
-                  </p>
+                  <Divider hidden></Divider>
+                  <Button>Delete</Button>
+                  </Container>
+                </List.Item>
+
               )
             })}
           </div>
-          <button type = "submit">SAVE</button>
+          <Divider hidden />
+          <Button type = "submit">SAVE</Button>
         </form>
       </div>
     );
