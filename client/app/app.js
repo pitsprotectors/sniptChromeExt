@@ -1,6 +1,7 @@
-import React, { Fragment, useState } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import React, { Fragment, useState, useEffect } from "react";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import QuestionCreator from "./QuestionCreator";
+import SnippetCreator from "./SnippetCreator";
 import QuestionDisplay from "./QuestionDisplay";
 import gql from "graphql-tag";
 import { Container, Paper, Typography } from "@material-ui/core";
@@ -13,6 +14,20 @@ const GET_PROJECTS = gql`
         id
         name
       }
+    }
+  }
+`;
+
+const CREATE_SNIPPET = gql`
+  mutation CreateNewSnippet(
+    $questionId: ID!
+    $content: String!
+    $url: String!
+  ) {
+    createSnippet(questionId: $questionId, content: $content, url: $url) {
+      id
+      content
+      questionId
     }
   }
 `;
@@ -58,17 +73,36 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "3rem"
   }
 }));
+let count = 0;
 
 const App = () => {
   const [appStatus, setAppStatus] = useState("createQuestion");
-  const [currentQuestion, setCurrentQuestion] = useState({
-    content: "How do camels store water in their backs like that?"
-  });
+  const [currentSnippet, setCurrentSnippet] = useState("");
+  const [currentQuestion, setCurrentQuestion] = useState("");
+
+  const [createSnippet, { data, loading, error }] = useMutation(CREATE_SNIPPET);
+
+  chrome.runtime.onMessage.addListener(snippetReceiver);
+  async function snippetReceiver(request, sender, sendResponse) {
+    console.log("message received! ", request.content);
+    console.log(currentQuestion);
+    // USE MUTATION TO CREATE A SNIPPET
+    // WHERE'S MY MUTATION FUNCTION?
+    await createSnippet({
+      variables: {
+        questionId: +currentQuestion.id,
+        content: request.content,
+        url: "www.google.com"
+      }
+    });
+  }
+
   const classes = useStyles();
   return (
     <Container className={classes.container}>
+      {/* <SnippetCreator /> */}
       <Paper elevation={3} className={classes.paper}>
-        {appStatus !== "createQuestion" ? (
+        {appStatus === "createQuestion" ? (
           <QuestionCreator
             setAppStatus={setAppStatus}
             setCurrentQuestion={setCurrentQuestion}

@@ -40,6 +40,9 @@ const CREATE_QUESTION = gql`
       id
       content
       projectId
+      snippets {
+        id
+      }
     }
   }
 `;
@@ -52,11 +55,14 @@ const QuestionCreator = ({
   const classes = useStyles();
 
   const [newQuestion, setNewQuestion] = useState("");
-  const [createQuestion, { data, loading, error }] = useMutation(
+  const [createQuestion, { data, loading, error, refetch }] = useMutation(
     CREATE_QUESTION
   );
 
-  if (data) setCurrentQuestion(data.createQuestion);
+  if (data) {
+    setCurrentQuestion(data.createQuestion);
+    console.log("new question data: ", data.createQuestion);
+  }
   return (
     <Container>
       <form

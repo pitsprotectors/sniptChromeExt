@@ -42,7 +42,7 @@ const QuestionDisplay = ({ currentQuestion }) => {
       <Container className={classes.questionDisplayBookmarksIcon}>
         <Badge
           className={classes.questionDisplayBookmarksIconBadge}
-          badgeContent={10}
+          badgeContent={currentQuestion.snippets.length}
           color="secondary"
         >
           <BookmarksIcon fontSize="large" />

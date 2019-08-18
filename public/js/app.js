@@ -117,7 +117,7 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n  mutation CreateNewQuestion($projectId: ID!, $content: String!) {\n    createQuestion(projectId: $projectId, content: $content) {\n      id\n      content\n      projectId\n    }\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  mutation CreateNewQuestion($projectId: ID!, $content: String!) {\n    createQuestion(projectId: $projectId, content: $content) {\n      id\n      content\n      projectId\n      snippets {\n        id\n      }\n    }\n  }\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -177,9 +177,14 @@ var QuestionCreator = function QuestionCreator(_ref) {
       _useMutation2$ = _useMutation2[1],
       data = _useMutation2$.data,
       loading = _useMutation2$.loading,
-      error = _useMutation2$.error;
+      error = _useMutation2$.error,
+      refetch = _useMutation2$.refetch;
 
-  if (data) setCurrentQuestion(data.createQuestion);
+  if (data) {
+    setCurrentQuestion(data.createQuestion);
+    console.log("new question data: ", data.createQuestion);
+  }
+
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Container"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
     id: "createQuestionForm",
     onSubmit:
@@ -306,7 +311,7 @@ var QuestionDisplay = function QuestionDisplay(_ref) {
     className: classes.questionDisplayBookmarksIcon
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Badge"], {
     className: classes.questionDisplayBookmarksIconBadge,
-    badgeContent: 10,
+    badgeContent: currentQuestion.snippets.length,
     color: "secondary"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_3___default.a, {
     fontSize: "large"
@@ -314,6 +319,29 @@ var QuestionDisplay = function QuestionDisplay(_ref) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (QuestionDisplay);
+
+/***/ }),
+
+/***/ "./client/app/SnippetCreator.js":
+/*!**************************************!*\
+  !*** ./client/app/SnippetCreator.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
+
+
+
+var SnippetCreator = function SnippetCreator() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Container"], null);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (SnippetCreator);
 
 /***/ }),
 
@@ -330,11 +358,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @apollo/react-hooks */ "./node_modules/@apollo/react-hooks/lib/react-hooks.esm.js");
 /* harmony import */ var _QuestionCreator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./QuestionCreator */ "./client/app/QuestionCreator.js");
-/* harmony import */ var _QuestionDisplay__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./QuestionDisplay */ "./client/app/QuestionDisplay.js");
-/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! graphql-tag */ "./node_modules/graphql-tag/src/index.js");
-/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(graphql_tag__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
-/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+/* harmony import */ var _SnippetCreator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SnippetCreator */ "./client/app/SnippetCreator.js");
+/* harmony import */ var _QuestionDisplay__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./QuestionDisplay */ "./client/app/QuestionDisplay.js");
+/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! graphql-tag */ "./node_modules/graphql-tag/src/index.js");
+/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(graphql_tag__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -342,6 +375,16 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n  mutation CreateNewSnippet(\n    $questionId: ID!\n    $content: String!\n    $url: String!\n  ) {\n    createSnippet(questionId: $questionId, content: $content, url: $url) {\n      id\n      content\n      questionId\n    }\n  }\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
 
 function _templateObject() {
   var data = _taggedTemplateLiteral(["\n  query projectList {\n    user(id: 1) {\n      projects {\n        id\n        name\n      }\n    }\n  }\n"]);
@@ -362,7 +405,9 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 
-var GET_PROJECTS = graphql_tag__WEBPACK_IMPORTED_MODULE_4___default()(_templateObject());
+
+var GET_PROJECTS = graphql_tag__WEBPACK_IMPORTED_MODULE_5___default()(_templateObject());
+var CREATE_SNIPPET = graphql_tag__WEBPACK_IMPORTED_MODULE_5___default()(_templateObject2());
 
 var GetProjects = function GetProjects() {
   var _useQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useQuery"])(GET_PROJECTS),
@@ -390,7 +435,7 @@ var GetProjects = function GetProjects() {
   })));
 };
 
-var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__["makeStyles"])(function (theme) {
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__["makeStyles"])(function (theme) {
   return {
     container: {
       display: "flex",
@@ -405,6 +450,7 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__["ma
     }
   };
 });
+var count = 0;
 
 var App = function App() {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])("createQuestion"),
@@ -412,24 +458,72 @@ var App = function App() {
       appStatus = _useState2[0],
       setAppStatus = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
-    content: "How do camels store water in their backs like that?"
-  }),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
       _useState4 = _slicedToArray(_useState3, 2),
-      currentQuestion = _useState4[0],
-      setCurrentQuestion = _useState4[1];
+      currentSnippet = _useState4[0],
+      setCurrentSnippet = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
+      _useState6 = _slicedToArray(_useState5, 2),
+      currentQuestion = _useState6[0],
+      setCurrentQuestion = _useState6[1];
+
+  var _useMutation = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useMutation"])(CREATE_SNIPPET),
+      _useMutation2 = _slicedToArray(_useMutation, 2),
+      createSnippet = _useMutation2[0],
+      _useMutation2$ = _useMutation2[1],
+      data = _useMutation2$.data,
+      loading = _useMutation2$.loading,
+      error = _useMutation2$.error;
+
+  chrome.runtime.onMessage.addListener(snippetReceiver);
+
+  function snippetReceiver(_x, _x2, _x3) {
+    return _snippetReceiver.apply(this, arguments);
+  }
+
+  function _snippetReceiver() {
+    _snippetReceiver = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(request, sender, sendResponse) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              console.log("message received! ", request.content);
+              console.log(currentQuestion); // USE MUTATION TO CREATE A SNIPPET
+              // WHERE'S MY MUTATION FUNCTION?
+
+              _context.next = 4;
+              return createSnippet({
+                variables: {
+                  questionId: +currentQuestion.id,
+                  content: request.content,
+                  url: "www.google.com"
+                }
+              });
+
+            case 4:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+    return _snippetReceiver.apply(this, arguments);
+  }
 
   var classes = useStyles();
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_5__["Container"], {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_6__["Container"], {
     className: classes.container
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_5__["Paper"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_6__["Paper"], {
     elevation: 3,
     className: classes.paper
-  }, appStatus !== "createQuestion" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionCreator__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }, appStatus === "createQuestion" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionCreator__WEBPACK_IMPORTED_MODULE_2__["default"], {
     setAppStatus: setAppStatus,
     setCurrentQuestion: setCurrentQuestion,
     currentQuestion: currentQuestion
-  }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionDisplay__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionDisplay__WEBPACK_IMPORTED_MODULE_4__["default"], {
     currentQuestion: currentQuestion
   })));
 };
@@ -492,7 +586,8 @@ __webpack_require__.r(__webpack_exports__);
 
 if (!global._babelPolyfill) {
   __webpack_require__(/*! babel-polyfill */ "./node_modules/babel-polyfill/lib/index.js");
-}
+} // Apollo client set up
+
 
 var cache = new apollo_cache_inmemory__WEBPACK_IMPORTED_MODULE_3__["InMemoryCache"]();
 var link = new apollo_link_http__WEBPACK_IMPORTED_MODULE_4__["HttpLink"]({
@@ -501,17 +596,7 @@ var link = new apollo_link_http__WEBPACK_IMPORTED_MODULE_4__["HttpLink"]({
 var client = new apollo_client__WEBPACK_IMPORTED_MODULE_2__["ApolloClient"]({
   link: link,
   cache: cache
-}); // chrome.runtime.onMessage.addListener(receiver);
-// chrome.storage.sync.set({ key: "hello" });
-// function receiver(request, sender, sendResponse) {
-//   if (request.text === "footer") {
-//     console.log("message received");
-//     const footer = document.getElementsByClassName(
-//       "snippet-footer-container"
-//     )[0];
-//     footer.classList.add("active");
-//   }
-// }
+}); // custom Material UI theme to be provided to entire app
 
 var appMuiTheme = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__["createMuiTheme"])({
   typography: {
@@ -521,56 +606,13 @@ var appMuiTheme = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__["
     fontFamily: '"Open Sans", "Helvetica", "Arial", "sans-serif"',
     fontSize: 14
   }
-});
-
-function renderWarning() {
-  console.log("working?");
-}
-
-console.log(document); // render the react components to the newly created container
+}); // render the react components to the newly created container
 
 react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__["MuiThemeProvider"], {
   theme: appMuiTheme
 }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_5__["ApolloProvider"], {
   client: client
-}, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app__WEBPACK_IMPORTED_MODULE_6__["default"], null))), document.getElementById("snippet-app-container")); // console.log("is this file running?");
-// chrome.storage.sync.set({ snippetsArray: [] });
-// function getSelectedText() {
-//   var content = "";
-//   if (
-//     window
-//       .getSelection()
-//       .toString()
-//       .trim().length
-//   ) {
-//     console.log("mouseup working?");
-//     content = window.getSelection().toString();
-//     // console.log(document);
-//     // console.log(window);
-//     // console.log(content);
-//     const newSnippetsArray = [];
-//     chrome.storage.sync.get("snippetsArray", ({ snippetsArray }) => {
-//       console.log(
-//         "snippetsArray before setting to newSnippets: ",
-//         snippetsArray
-//       );
-//       newSnippetsArray.push(snippetsArray.slice());
-//     });
-//     newSnippetsArray.push(content);
-//     chrome.storage.sync.set({ snippetsArray: newSnippetsArray });
-//     chrome.storage.sync.get("snippetsArray", ({ snippetsArray }) => {
-//       console.log(
-//         "snippetsArray after setting to newSnippets: ",
-//         snippetsArray
-//       );
-//     });
-//     // container.textContent = content;
-//     // chrome.runtime.sendMessage({ content }, function(response) {
-//     //   console.log("response.farewell");
-//     // });
-//   }
-// }
-// document.onmouseup = getSelectedText;
+}, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app__WEBPACK_IMPORTED_MODULE_6__["default"], null))), document.getElementById("snippet-app-container"));
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
 /***/ }),
