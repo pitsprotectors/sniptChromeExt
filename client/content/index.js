@@ -47,11 +47,14 @@ function receiver(request, sender, sendResponse) {
     // const semantic = document.createElement("link");
     // semantic.rel = "stylesheet";
     // semantic.href =
-    //   "//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css";
+    // "//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css";
     // head.appendChild(semantic);
     // head.appendChild(robotoFont);
     // head.appendChild(materialIcons);
-    const footer = document.getElementsByClassName("footer-container")[0];
+    console.log("message received");
+    const footer = document.getElementsByClassName(
+      "snippet-footer-container"
+    )[0];
     footer.classList.add("active");
   }
 }

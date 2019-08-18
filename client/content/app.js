@@ -46,7 +46,7 @@ const App = () => {
   const [appStatus, setAppStatus] = useState("createQuestion");
   const [currentQuestion, setCurrentQuestion] = useState(undefined);
   return (
-    <div className="footer-container">
+    <div className="snippet-footer-container">
       {appStatus === "createQuestion" ? (
         <QuestionCreator
           setAppStatus={setAppStatus}

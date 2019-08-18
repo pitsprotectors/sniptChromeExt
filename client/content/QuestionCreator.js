@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { Button } from "semantic-ui-react";
+import { Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  button: {
+    margin: theme.spacing(1)
+  },
+  input: {
+    display: "none"
+  }
+}));
 
 const CREATE_QUESTION = gql`
   mutation CreateNewQuestion($projectId: ID!, $content: String!) {
@@ -14,6 +24,8 @@ const CREATE_QUESTION = gql`
 `;
 
 const QuestionCreator = ({ setAppStatus, setCurrentQuestion }) => {
+  const classes = useStyles();
+
   const [newQuestion, setNewQuestion] = useState("");
   const [createQuestion, { data, loading, error }] = useMutation(
     CREATE_QUESTION
@@ -39,8 +51,14 @@ const QuestionCreator = ({ setAppStatus, setCurrentQuestion }) => {
           value={newQuestion}
           onChange={e => setNewQuestion(e.target.value)}
         />
-        <button type="submit">CREATE</button>
-        <Button>HELLO BUTTON</Button>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          className={classes.button}
+        >
+          CREATE
+        </Button>
       </form>
       {newQuestion}
     </div>

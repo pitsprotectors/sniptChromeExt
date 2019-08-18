@@ -1,4 +1,4 @@
-.footer-container {
+.snippet-footer-container {
   opacity: 0;
   background-color: black;
   padding: 1rem;
@@ -6,12 +6,12 @@
   position: fixed;
   bottom: 0;
   text-align: center;
-  z-index: 2;
+  z-index: 4444444444;
   transition: all 0.7s;
   color: white
 }
 
-.footer-container.active {
+.snippet-footer-container.active {
   opacity: 1;
   transition: all 0.7s
 }
