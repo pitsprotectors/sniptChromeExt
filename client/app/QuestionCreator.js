@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { Button } from "@material-ui/core";
+import {
+  Container,
+  Button,
+  FormControl,
+  TextField,
+  Fab
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -10,6 +17,20 @@ const useStyles = makeStyles(theme => ({
   },
   input: {
     display: "none"
+  },
+  questionForm: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: ".25rem"
+  },
+  textField: {
+    width: "25rem",
+    margin: theme.spacing(1)
+  },
+  fab: {
+    margin: theme.spacing(1)
   }
 }));
 
@@ -23,18 +44,23 @@ const CREATE_QUESTION = gql`
   }
 `;
 
-const QuestionCreator = ({ setAppStatus, setCurrentQuestion }) => {
+const QuestionCreator = ({
+  setAppStatus,
+  setCurrentQuestion,
+  currentQuestion
+}) => {
   const classes = useStyles();
 
   const [newQuestion, setNewQuestion] = useState("");
   const [createQuestion, { data, loading, error }] = useMutation(
     CREATE_QUESTION
   );
+
   if (data) setCurrentQuestion(data.createQuestion);
   return (
-    <div>
-      <h3>What would you like to learn today?</h3>
+    <Container>
       <form
+        id="createQuestionForm"
         onSubmit={async e => {
           e.preventDefault();
           console.log("is this happening?");
@@ -43,25 +69,47 @@ const QuestionCreator = ({ setAppStatus, setCurrentQuestion }) => {
           });
           setAppStatus("createNewSnippets");
         }}
+        className={classes.questionForm}
       >
-        <label>Create a New Question: </label>
-        <input
+        {/* <input
           type="text"
           id="newQuestion"
           value={newQuestion}
           onChange={e => setNewQuestion(e.target.value)}
+        /> */}
+        <TextField
+          id="outlined-with-placeholder"
+          label="What would you like to learn today?"
+          placeholder="Insert your question here"
+          className={classes.textField}
+          margin="normal"
+          variant="outlined"
+          value={newQuestion}
+          onChange={e => setNewQuestion(e.target.value)}
+          inputProps={{
+            maxLength: 100
+          }}
         />
-        <Button
+        {/* <Button
           type="submit"
           variant="contained"
           color="primary"
           className={classes.button}
+          form="createQuestionForm"
         >
           CREATE
-        </Button>
+        </Button> */}
+        <Fab
+          type="submit"
+          color="primary"
+          aria-label="Add"
+          className={classes.fab}
+        >
+          <AddIcon />
+        </Fab>
       </form>
       {newQuestion}
-    </div>
+    </Container>
   );
 };
 

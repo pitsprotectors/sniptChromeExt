@@ -6,7 +6,7 @@ module.exports = {
   mode: "development",
   entry: {
     popup: "./client/popup/index.js",
-    content: "./client/content/index.js"
+    app: "./client/app/index.js"
   },
   output: {
     path: __dirname,
@@ -32,9 +32,8 @@ module.exports = {
       },
       {
         test: /\.jpe?g$|\.gif$|\.ico$|\.png$|\.svg$/,
-        use: "file-loader?name=[name].[ext]?[hash]"
+        loader: "file-loader"
       },
-
       // the following 3 rules handle font extraction
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,

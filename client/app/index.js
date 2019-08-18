@@ -5,6 +5,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 import { ApolloProvider } from "@apollo/react-hooks";
 import App from "./app";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 if (!global._babelPolyfill) {
   require("babel-polyfill");
@@ -15,56 +16,43 @@ const link = new HttpLink({
 });
 const client = new ApolloClient({ link, cache });
 
-// create a container on the DOM for my react app
-const container = document.createElement("div");
-container.id = "container";
+// chrome.runtime.onMessage.addListener(receiver);
+// chrome.storage.sync.set({ key: "hello" });
 
-const robotoFont = document.createElement("link");
-robotoFont.rel = "stylesheet";
-robotoFont.href =
-  "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap";
+// function receiver(request, sender, sendResponse) {
+//   if (request.text === "footer") {
+//     console.log("message received");
+//     const footer = document.getElementsByClassName(
+//       "snippet-footer-container"
+//     )[0];
+//     footer.classList.add("active");
+//   }
+// }
 
-const materialIcons = document.createElement("link");
-materialIcons.rel = "stylesheet";
-materialIcons.href = "https://fonts.googleapis.com/icon?family=Material+Icons";
-
-const iframe = document.createElement("iframe");
-iframe.src = chrome.runtime.getURL("/test.html");
-
-// selected the body tag and APPEND my container to the body
-const body = document.getElementsByTagName("body")[0];
-body.appendChild(container);
-body.appendChild(iframe);
-
-console.log(iframe);
-chrome.runtime.onMessage.addListener(receiver);
-chrome.storage.sync.set({ key: "hello" });
-
-// receiving message from CE upon popup
-function receiver(request, sender, sendResponse) {
-  if (request.text === "footer") {
-    // const head = document.getElementsByTagName("head")[0];
-    // const semantic = document.createElement("link");
-    // semantic.rel = "stylesheet";
-    // semantic.href =
-    // "//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css";
-    // head.appendChild(semantic);
-    // head.appendChild(robotoFont);
-    // head.appendChild(materialIcons);
-    console.log("message received");
-    const footer = document.getElementsByClassName(
-      "snippet-footer-container"
-    )[0];
-    footer.classList.add("active");
+const appMuiTheme = createMuiTheme({
+  typography: {
+    primary: {
+      main: "Open Sans"
+    },
+    fontFamily: '"Open Sans", "Helvetica", "Arial", "sans-serif"',
+    fontSize: 14
   }
+});
+
+function renderWarning() {
+  console.log("working?");
 }
+
+console.log(document);
 
 // render the react components to the newly created container
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
-  document.getElementById("container")
+  <MuiThemeProvider theme={appMuiTheme}>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </MuiThemeProvider>,
+  document.getElementById("snippet-app-container")
 );
 
 // console.log("is this file running?");
