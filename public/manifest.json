@@ -1,17 +1,17 @@
 {
-  "name": "testing",
+  "name": "Snippet Chrome Extension",
   "version": "1.0",
-  "description": "yoyoyo",
-  "permissions": ["storage", "activeTab", "contextMenus"],
+  "description": "Next-generation spaced repetition learning assistant",
+  "permissions": ["storage", "activeTab", "contextMenus", "commands"],
   "browser_action": {
-    "default_popup": "popup.html"
+    "default_icon": "logo.png"
   },
   "commands": {
-    "toggle-feature-foo": {
+    "toggle-app-activity": {
       "suggested_key": {
         "default": "Ctrl+Shift+8"
       },
-      "description": "Toggle feature foo",
+      "description": "toggle-app-activity",
       "global": true
     },
     "_execute_browser_action": {
@@ -23,15 +23,17 @@
       }
     }
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["js/content.js"]
-    }
-  ],
   "background": {
     "scripts": ["js/background.js"],
     "persistent": false
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["css/content.css"],
+      "js": ["js/content.js"]
+    }
+  ],
+  "web_accessible_resources": ["app.html"],
   "manifest_version": 2
 }

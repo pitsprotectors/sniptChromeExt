@@ -1,3 +1,4 @@
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { ApolloClient } from "apollo-client";
@@ -10,11 +11,19 @@ import { Input, Container, Header, Button, Divider, Segment, List} from 'semanti
 import "babel-polyfill";
 import App from "./app";
 
-const cache = new InMemoryCache();
-const link = new HttpLink({
-  uri: "http://localhost:4000/graphql"
+// const cache = new InMemoryCache();
+// const link = new HttpLink({
+//   uri: "http://localhost:4000/graphql"
+// });
+// const client = new ApolloClient({ link, cache });
+
+// sending message upon popup to content script
+chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+  chrome.tabs.sendMessage(tabs[0].id, { text: "footer" }, function(
+    response
+  ) {});
 });
-const client = new ApolloClient({ link, cache });
+
 
 ReactDOM.render(
   <ApolloProvider client={client}>
@@ -184,3 +193,4 @@ class App extends Component {
 }
 
 ReactDOM.render(<App />, document.getElementById("container"));
+
