@@ -366,16 +366,14 @@ if (!global._babelPolyfill) {
 } // document.addEventListener("keydown", logkey);
 
 
-var map = {};
-
-var logkey = function logkey(e) {
-  alert("worked");
+var handleActivateApp = function handleActivateApp(e) {
   console.log(e.key);
   console.log("working");
-  e = e || event; // to deal with IE
 
-  map[e.keyCode] = e.type == "keydown";
-  console.log(map);
+  if (e.key === "`") {
+    var iframeDocument = document.getElementsByClassName("snippet-iframe-container")[0];
+    !iframeDocument.classList.contains("active") ? iframeDocument.classList.add("active") : iframeDocument.classList.remove("active");
+  }
 }; // inject iframe into DOM
 
 
@@ -401,7 +399,7 @@ popupContainer.addEventListener("mouseover", respondToMouseOver);
 popupContainer.addEventListener("mouseout", respondToMouseOut); // selected the body tag to APPEND iframe + react app
 
 var body = document.getElementsByTagName("body")[0];
-body.addEventListener("keydown", logkey);
+body.addEventListener("keydown", handleActivateApp);
 body.appendChild(iframe);
 body.appendChild(contentContainer);
 contentContainer.appendChild(popupContainer); // listen to messages from popup.js

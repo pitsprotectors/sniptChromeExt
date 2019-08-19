@@ -1,49 +1,11 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import React, { useState, useEffect } from "react";
+import ProjectSelector from "./ProjectSelector";
 import QuestionCreator from "./QuestionCreator";
 import QuestionDisplay from "./QuestionDisplay";
-import gql from "graphql-tag";
-import { Container, Paper, Typography } from "@material-ui/core";
+import { Container, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-
-const GET_PROJECTS = gql`
-  query projectList {
-    user(id: 1) {
-      projects {
-        id
-        name
-      }
-    }
-  }
-`;
-
-const GetProjects = () => {
-  const { data, loading, error, refetch } = useQuery(GET_PROJECTS);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>ERROR :(</p>;
-
-  return (
-    <Fragment>
-      <select
-        onChange={e => {
-          console.log(e.target.value);
-          e.preventDefault();
-          setSelectedProjectId(e.target.value);
-        }}
-      >
-        <option value="default">Please Select Your Project</option>
-        {data.user.projects.length &&
-          data.user.projects.map(project => {
-            return (
-              <option name={project.name} key={project.id} value={project.id}>
-                {project.name}
-              </option>
-            );
-          })}
-      </select>
-    </Fragment>
-  );
-};
+import { useLazyQuery } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -58,32 +20,76 @@ const useStyles = makeStyles(theme => ({
     height: "5rem",
     width: "100%",
     borderRadius: "3rem"
+  },
+  button: {
+    margin: theme.spacing(1)
+  },
+  input: {
+    display: "none"
+  },
+  fab: {
+    margin: theme.spacing(1)
+  },
+  bookIconButton: {
+    width: "4rem",
+    height: "4rem",
+    marginLeft: "1rem",
+    marginTop: ".5rem"
+  },
+  bookIconSvg: {
+    color: "#000000",
+    padding: 0
   }
 }));
-let count = 0;
+
+const GET_PROJECTS = gql`
+  query projectList {
+    user(id: 1) {
+      projects {
+        id
+        name
+      }
+    }
+  }
+`;
 
 const App = () => {
   const [appStatus, setAppStatus] = useState("createQuestion");
   const [currentSnippet, setCurrentSnippet] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState("");
+  const [currentProject, setCurrentProject] = useState("");
+
+  const [getProject, { loading, data, refetch }] = useLazyQuery(GET_PROJECTS);
+
+  useEffect(() => {
+    getProject();
+    console.log("componentdidmount");
+  }, []);
+
+  if (data && data.user) {
+    setCurrentProject(data.user.projects[0].id);
+    console.log(data.user.projects[0].id);
+  }
 
   const classes = useStyles();
   return (
     <Container className={classes.container}>
       <Paper elevation={3} className={classes.paper}>
+        <div>hello</div>
+        {/* <ProjectSelector setCurrentProject={setCurrentProject} />
         {!currentQuestion.id ? (
           <QuestionCreator
             setAppStatus={setAppStatus}
             setCurrentQuestion={setCurrentQuestion}
             currentQuestion={currentQuestion}
+            currentProject={currentProject}
           />
         ) : (
           <QuestionDisplay
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentQuestion}
           />
-        )}
-        {/* <GetProjects /> */}
+        )} */}
       </Paper>
     </Container>
   );

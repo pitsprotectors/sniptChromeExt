@@ -15,12 +15,23 @@
 // });
 // const client = new ApolloClient({ link, cache });
 
-// sending message upon popup to content script
-chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-  chrome.tabs.sendMessage(tabs[0].id, { text: "footer" }, function(
-    response
-  ) {});
-});
+// // sending message upon popup to content script
+// export default async function notify() {
+//   await setTimeout(function() {
+//     chrome.notifications.create(
+//       {
+//         type: "basic",
+//         title: "Check your snipts",
+//         message: "It's time to learn! click here to check your snipts!"
+//       },
+//       (onClick = () => {
+//         chrome.tabs.create({ url: "http://localhost:4000" });
+//       })
+//     );
+//   }, 3000);
+// }
+
+// notify();
 
 // ReactDOM.render(
 //   <ApolloProvider client={client}>
