@@ -364,10 +364,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(graphql_tag__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
 /* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -474,44 +470,21 @@ var App = function App() {
       _useMutation2$ = _useMutation2[1],
       data = _useMutation2$.data,
       loading = _useMutation2$.loading,
-      error = _useMutation2$.error;
+      error = _useMutation2$.error; // chrome.runtime.onMessage.addListener(snippetReceiver);
+  // async function snippetReceiver(request, sender, sendResponse) {
+  //   console.log("message received! ", request.content);
+  //   console.log(currentQuestion);
+  //   // USE MUTATION TO CREATE A SNIPPET
+  //   // WHERE'S MY MUTATION FUNCTION?
+  //   await createSnippet({
+  //     variables: {
+  //       questionId: +currentQuestion.id,
+  //       content: request.content,
+  //       url: "www.google.com"
+  //     }
+  //   });
+  // }
 
-  chrome.runtime.onMessage.addListener(snippetReceiver);
-
-  function snippetReceiver(_x, _x2, _x3) {
-    return _snippetReceiver.apply(this, arguments);
-  }
-
-  function _snippetReceiver() {
-    _snippetReceiver = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee(request, sender, sendResponse) {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              console.log("message received! ", request.content);
-              console.log(currentQuestion); // USE MUTATION TO CREATE A SNIPPET
-              // WHERE'S MY MUTATION FUNCTION?
-
-              _context.next = 4;
-              return createSnippet({
-                variables: {
-                  questionId: +currentQuestion.id,
-                  content: request.content,
-                  url: "www.google.com"
-                }
-              });
-
-            case 4:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-    return _snippetReceiver.apply(this, arguments);
-  }
 
   var classes = useStyles();
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_6__["Container"], {

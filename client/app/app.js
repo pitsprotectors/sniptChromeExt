@@ -82,20 +82,20 @@ const App = () => {
 
   const [createSnippet, { data, loading, error }] = useMutation(CREATE_SNIPPET);
 
-  chrome.runtime.onMessage.addListener(snippetReceiver);
-  async function snippetReceiver(request, sender, sendResponse) {
-    console.log("message received! ", request.content);
-    console.log(currentQuestion);
-    // USE MUTATION TO CREATE A SNIPPET
-    // WHERE'S MY MUTATION FUNCTION?
-    await createSnippet({
-      variables: {
-        questionId: +currentQuestion.id,
-        content: request.content,
-        url: "www.google.com"
-      }
-    });
-  }
+  // chrome.runtime.onMessage.addListener(snippetReceiver);
+  // async function snippetReceiver(request, sender, sendResponse) {
+  //   console.log("message received! ", request.content);
+  //   console.log(currentQuestion);
+  //   // USE MUTATION TO CREATE A SNIPPET
+  //   // WHERE'S MY MUTATION FUNCTION?
+  //   await createSnippet({
+  //     variables: {
+  //       questionId: +currentQuestion.id,
+  //       content: request.content,
+  //       url: "www.google.com"
+  //     }
+  //   });
+  // }
 
   const classes = useStyles();
   return (

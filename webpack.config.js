@@ -6,7 +6,8 @@ module.exports = {
   mode: "development",
   entry: {
     popup: "./client/popup/index.js",
-    app: "./client/app/index.js"
+    app: "./client/app/index.js",
+    content: "./client/content/index.js"
   },
   output: {
     path: __dirname,
