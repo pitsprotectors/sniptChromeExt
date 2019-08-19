@@ -5,10 +5,22 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 import { ApolloProvider } from "@apollo/react-hooks";
 import App from "./app";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 if (!global._babelPolyfill) {
   require("babel-polyfill");
 }
+
+// document.addEventListener("keydown", logkey);
+
+const map = {};
+
+const logkey = e => {
+  alert("worked");
+  console.log(e.key);
+  console.log("working");
+  e = e || event; // to deal with IE
+  map[e.keyCode] = e.type == "keydown";
+  console.log(map);
+};
 
 // inject iframe into DOM
 const iframe = document.createElement("iframe");
@@ -19,10 +31,27 @@ iframe.src = chrome.runtime.getURL("/app.html");
 const contentContainer = document.createElement("div");
 contentContainer.id = "snippet-content-container";
 
+// inject container for react app into DOM
+const popupContainer = document.createElement("div");
+popupContainer.id = "snippet-popup-container";
+
+const respondToMouseOver = event => {
+  document.querySelector("#snippet-popup-container").classList.add("active");
+};
+
+const respondToMouseOut = event => {
+  document.querySelector("#snippet-popup-container").classList.remove("active");
+};
+
+popupContainer.addEventListener("mouseover", respondToMouseOver);
+popupContainer.addEventListener("mouseout", respondToMouseOut);
+
 // selected the body tag to APPEND iframe + react app
 const body = document.getElementsByTagName("body")[0];
+body.addEventListener("keydown", logkey);
 body.appendChild(iframe);
 body.appendChild(contentContainer);
+contentContainer.appendChild(popupContainer);
 
 // listen to messages from popup.js
 chrome.runtime.onMessage.addListener(receiver);
@@ -30,11 +59,10 @@ chrome.runtime.onMessage.addListener(receiver);
 // receiving message from popup on start to activate iframe
 function receiver(request, sender, sendResponse) {
   if (request.text === "footer") {
-    console.log("message received");
+    console.log("footer message received");
     const iframeDocument = document.getElementsByClassName(
       "snippet-iframe-container"
     )[0];
-    html.classList.add("snippet-html");
     iframeDocument.classList.add("active");
   }
 }
@@ -51,5 +79,5 @@ ReactDOM.render(
   <ApolloProvider client={client}>
     <App />
   </ApolloProvider>,
-  document.getElementById("snippet-content-container")
+  document.getElementById("snippet-popup-container")
 );

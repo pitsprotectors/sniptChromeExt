@@ -104,6 +104,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
 /* harmony import */ var _material_ui_icons_Add__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/icons/Add */ "./node_modules/@material-ui/icons/Add.js");
 /* harmony import */ var _material_ui_icons_Add__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_Add__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _material_ui_core_IconButton__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @material-ui/core/IconButton */ "./node_modules/@material-ui/core/esm/IconButton/index.js");
+/* harmony import */ var _material_ui_icons_MoreVert__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @material-ui/icons/MoreVert */ "./node_modules/@material-ui/icons/MoreVert.js");
+/* harmony import */ var _material_ui_icons_MoreVert__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_MoreVert__WEBPACK_IMPORTED_MODULE_7__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -116,6 +119,16 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n  query {\n    project(id: 2) {\n      id\n      name\n      questions {\n        id\n        content\n        snippets {\n          id\n        }\n      }\n    }\n  }\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject() {
   var data = _taggedTemplateLiteral(["\n  mutation CreateNewQuestion($projectId: ID!, $content: String!) {\n    createQuestion(projectId: $projectId, content: $content) {\n      id\n      content\n      projectId\n      snippets {\n        id\n      }\n    }\n  }\n"]);
 
@@ -127,6 +140,8 @@ function _templateObject() {
 }
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
 
 
 
@@ -159,6 +174,8 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["ma
   };
 });
 var CREATE_QUESTION = graphql_tag__WEBPACK_IMPORTED_MODULE_2___default()(_templateObject());
+var GET_PROJECT = graphql_tag__WEBPACK_IMPORTED_MODULE_2___default()(_templateObject2());
+var ITEM_HEIGHT = 60;
 
 var QuestionCreator = function QuestionCreator(_ref) {
   var setAppStatus = _ref.setAppStatus,
@@ -175,16 +192,42 @@ var QuestionCreator = function QuestionCreator(_ref) {
       _useMutation2 = _slicedToArray(_useMutation, 2),
       createQuestion = _useMutation2[0],
       _useMutation2$ = _useMutation2[1],
-      data = _useMutation2$.data,
+      createQuestionData = _useMutation2$.createQuestionData,
       loading = _useMutation2$.loading,
       error = _useMutation2$.error,
       refetch = _useMutation2$.refetch;
 
-  if (data) {
-    setCurrentQuestion(data.createQuestion);
-    console.log("new question data: ", data.createQuestion);
+  var _useQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useQuery"])(GET_PROJECT),
+      data = _useQuery.data;
+
+  var _React$useState = react__WEBPACK_IMPORTED_MODULE_0___default.a.useState(null),
+      _React$useState2 = _slicedToArray(_React$useState, 2),
+      anchorEl = _React$useState2[0],
+      setAnchorEl = _React$useState2[1];
+
+  var open = Boolean(anchorEl);
+
+  function handleClick(event) {
+    setAnchorEl(event.currentTarget);
   }
 
+  function handleClose() {
+    setAnchorEl(null);
+  }
+
+  function handleSelectQuestion(question) {
+    console.log("handleselectquestion");
+    console.log("selected quesiton", question);
+    setCurrentQuestion(question);
+    chrome.storage.local.set({
+      questionId: question.id
+    }, function () {
+      console.log("Chrome Storage questionId saved as ", question.id);
+    });
+    setAnchorEl(null);
+  }
+
+  if (data) console.log(data);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Container"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
     id: "createQuestionForm",
     onSubmit:
@@ -193,13 +236,14 @@ var QuestionCreator = function QuestionCreator(_ref) {
       var _ref2 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee(e) {
+        var _ref3, data;
+
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 e.preventDefault();
-                console.log("is this happening?");
-                _context.next = 4;
+                _context.next = 3;
                 return createQuestion({
                   variables: {
                     projectId: 1,
@@ -207,10 +251,18 @@ var QuestionCreator = function QuestionCreator(_ref) {
                   }
                 });
 
-              case 4:
+              case 3:
+                _ref3 = _context.sent;
+                data = _ref3.data;
                 setAppStatus("createNewSnippets");
+                setCurrentQuestion(data.createQuestion);
+                chrome.storage.local.set({
+                  questionId: data.createQuestion.id
+                }, function () {
+                  console.log("Chrome Storage questionId saved as ", data.createQuestion.id);
+                });
 
-              case 5:
+              case 8:
               case "end":
                 return _context.stop();
             }
@@ -235,9 +287,34 @@ var QuestionCreator = function QuestionCreator(_ref) {
       return setNewQuestion(e.target.value);
     },
     inputProps: {
-      maxLength: 100
+      maxLength: 75
     }
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Fab"], {
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_IconButton__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    "aria-label": "more",
+    "aria-controls": "long-menu",
+    "aria-haspopup": "true",
+    onClick: handleClick
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_MoreVert__WEBPACK_IMPORTED_MODULE_7___default.a, null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Menu"], {
+    id: "long-menu",
+    anchorEl: anchorEl,
+    keepMounted: true,
+    open: open,
+    onClose: handleClose,
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT,
+        width: 200
+      }
+    }
+  }, data.project && data.project.questions.map(function (question) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["MenuItem"], {
+      key: question.id // selected={question.id === }
+      ,
+      onClick: function onClick() {
+        handleSelectQuestion(question);
+      }
+    }, question.content);
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Fab"], {
     type: "submit",
     color: "primary",
     "aria-label": "Add",
@@ -260,18 +337,46 @@ var QuestionCreator = function QuestionCreator(_ref) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
-/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
-/* harmony import */ var _material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @material-ui/icons/bookmarks */ "./node_modules/@material-ui/icons/bookmarks.js");
-/* harmony import */ var _material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! graphql-tag */ "./node_modules/graphql-tag/src/index.js");
+/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(graphql_tag__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _apollo_react_hooks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @apollo/react-hooks */ "./node_modules/@apollo/react-hooks/lib/react-hooks.esm.js");
+/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+/* harmony import */ var _material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/icons/bookmarks */ "./node_modules/@material-ui/icons/bookmarks.js");
+/* harmony import */ var _material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_5__);
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  query getQuestion($id: ID!) {\n    question(id: $id) {\n      id\n      content\n      snippets {\n        id\n        content\n      }\n    }\n  }\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
 
 
-var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["makeStyles"])(function (theme) {
+
+
+
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["makeStyles"])(function (theme) {
   return {
     questionDisplayContainer: {
-      paddingTop: ".5rem",
       display: "flex",
       flexDirection: "row",
       alignItems: "center"
@@ -290,58 +395,102 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_2__["ma
       padding: 0
     },
     questionDisplayBookmarksIconBadge: {
-      margin: theme.spacing(2)
+      margin: 0
+    },
+    questionDisplayQuestionContent: {
+      fontSize: "12px"
     }
   };
 });
+var GET_QUESTION = graphql_tag__WEBPACK_IMPORTED_MODULE_1___default()(_templateObject());
 
 var QuestionDisplay = function QuestionDisplay(_ref) {
-  var currentQuestion = _ref.currentQuestion;
+  var currentQuestion = _ref.currentQuestion,
+      setCurrentQuestion = _ref.setCurrentQuestion;
   var classes = useStyles();
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Container"], {
+
+  var _useLazyQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_2__["useLazyQuery"])(GET_QUESTION),
+      _useLazyQuery2 = _slicedToArray(_useLazyQuery, 2),
+      getQuestion = _useLazyQuery2[0],
+      _useLazyQuery2$ = _useLazyQuery2[1],
+      loading = _useLazyQuery2$.loading,
+      data = _useLazyQuery2$.data,
+      refetch = _useLazyQuery2$.refetch;
+
+  if (data && data.question) {
+    setCurrentQuestion(data.question);
+  } // listen to messages from popup.js
+
+
+  chrome.runtime.onMessage.addListener(receiver); // receiving message from popup on start to activate iframe
+
+  function receiver(_x, _x2, _x3) {
+    return _receiver.apply(this, arguments);
+  }
+
+  function _receiver() {
+    _receiver = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(request, sender, sendResponse) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (!(request.message === "SNIPPETS_REFETCH")) {
+                _context.next = 7;
+                break;
+              }
+
+              console.log("refetch message received");
+              _context.t0 = currentQuestion.id;
+
+              if (!_context.t0) {
+                _context.next = 6;
+                break;
+              }
+
+              _context.next = 6;
+              return getQuestion({
+                variables: {
+                  id: currentQuestion.id
+                }
+              });
+
+            case 6:
+              refetch && refetch();
+
+            case 7:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+    return _receiver.apply(this, arguments);
+  }
+
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Container"], {
     className: classes.questionDisplayContainer
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Container"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Container"], {
     className: classes.questionDisplayContent
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Typography"], {
-    variant: "h5",
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Typography"], {
+    variant: "h6",
     className: classes.questionDisplayLabel
-  }, "Current Question:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Typography"], {
-    variant: "body1"
-  }, currentQuestion.content)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Container"], {
+  }, "Current Question:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Typography"], {
+    variant: "body1",
+    className: classes.questionDisplayQuestionContent
+  }, currentQuestion.content)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Container"], {
     className: classes.questionDisplayBookmarksIcon
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Badge"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Badge"], {
     className: classes.questionDisplayBookmarksIconBadge,
-    badgeContent: currentQuestion.snippets.length,
+    badgeContent: !currentQuestion.id ? 0 : currentQuestion.snippets.length,
     color: "secondary"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_3___default.a, {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_5___default.a, {
     fontSize: "large"
   }))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (QuestionDisplay);
-
-/***/ }),
-
-/***/ "./client/app/SnippetCreator.js":
-/*!**************************************!*\
-  !*** ./client/app/SnippetCreator.js ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
-
-
-
-var SnippetCreator = function SnippetCreator() {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_1__["Container"], null);
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (SnippetCreator);
 
 /***/ }),
 
@@ -358,12 +507,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @apollo/react-hooks */ "./node_modules/@apollo/react-hooks/lib/react-hooks.esm.js");
 /* harmony import */ var _QuestionCreator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./QuestionCreator */ "./client/app/QuestionCreator.js");
-/* harmony import */ var _SnippetCreator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SnippetCreator */ "./client/app/SnippetCreator.js");
-/* harmony import */ var _QuestionDisplay__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./QuestionDisplay */ "./client/app/QuestionDisplay.js");
-/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! graphql-tag */ "./node_modules/graphql-tag/src/index.js");
-/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(graphql_tag__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
-/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
+/* harmony import */ var _QuestionDisplay__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./QuestionDisplay */ "./client/app/QuestionDisplay.js");
+/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! graphql-tag */ "./node_modules/graphql-tag/src/index.js");
+/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(graphql_tag__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -371,16 +519,6 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n  mutation CreateNewSnippet(\n    $questionId: ID!\n    $content: String!\n    $url: String!\n  ) {\n    createSnippet(questionId: $questionId, content: $content, url: $url) {\n      id\n      content\n      questionId\n    }\n  }\n"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
 
 function _templateObject() {
   var data = _taggedTemplateLiteral(["\n  query projectList {\n    user(id: 1) {\n      projects {\n        id\n        name\n      }\n    }\n  }\n"]);
@@ -401,9 +539,7 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 
-
-var GET_PROJECTS = graphql_tag__WEBPACK_IMPORTED_MODULE_5___default()(_templateObject());
-var CREATE_SNIPPET = graphql_tag__WEBPACK_IMPORTED_MODULE_5___default()(_templateObject2());
+var GET_PROJECTS = graphql_tag__WEBPACK_IMPORTED_MODULE_4___default()(_templateObject());
 
 var GetProjects = function GetProjects() {
   var _useQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useQuery"])(GET_PROJECTS),
@@ -431,7 +567,7 @@ var GetProjects = function GetProjects() {
   })));
 };
 
-var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__["makeStyles"])(function (theme) {
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__["makeStyles"])(function (theme) {
   return {
     container: {
       display: "flex",
@@ -439,6 +575,8 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_7__["ma
       paddingTop: ".5rem"
     },
     paper: {
+      display: "flex",
+      justifyContent: "center",
       backgroundColor: "white",
       height: "5rem",
       width: "100%",
@@ -464,68 +602,23 @@ var App = function App() {
       currentQuestion = _useState6[0],
       setCurrentQuestion = _useState6[1];
 
-  var _useMutation = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useMutation"])(CREATE_SNIPPET),
-      _useMutation2 = _slicedToArray(_useMutation, 2),
-      createSnippet = _useMutation2[0],
-      _useMutation2$ = _useMutation2[1],
-      data = _useMutation2$.data,
-      loading = _useMutation2$.loading,
-      error = _useMutation2$.error; // chrome.runtime.onMessage.addListener(snippetReceiver);
-  // async function snippetReceiver(request, sender, sendResponse) {
-  //   console.log("message received! ", request.content);
-  //   console.log(currentQuestion);
-  //   // USE MUTATION TO CREATE A SNIPPET
-  //   // WHERE'S MY MUTATION FUNCTION?
-  //   await createSnippet({
-  //     variables: {
-  //       questionId: +currentQuestion.id,
-  //       content: request.content,
-  //       url: "www.google.com"
-  //     }
-  //   });
-  // }
-
-
   var classes = useStyles();
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_6__["Container"], {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_5__["Container"], {
     className: classes.container
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_6__["Paper"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_5__["Paper"], {
     elevation: 3,
     className: classes.paper
-  }, appStatus === "createQuestion" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionCreator__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }, !currentQuestion.id ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionCreator__WEBPACK_IMPORTED_MODULE_2__["default"], {
     setAppStatus: setAppStatus,
     setCurrentQuestion: setCurrentQuestion,
     currentQuestion: currentQuestion
-  }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionDisplay__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    currentQuestion: currentQuestion
+  }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionDisplay__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    currentQuestion: currentQuestion,
+    setCurrentQuestion: setCurrentQuestion
   })));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (App);
-{
-  /* <body onkeydown="myFunction(event)">
-  <h1>Document execCommand() Method</h1>
-  <p>The executeCommand() method executes a specified command on selected text or section.</p>
-  <h2>Select Text and Press Shift</h2>
-  <p>Select some text in this page, and press the SHIFT button to make the selected text toggle between bold and normal.</p>
-  <script>
-  document.designMode = "on";
-  function myFunction(event) {
-  if(document.querySelector('span[style*="background-color: rgb(111, 228, 252);"]') !== null) {
-   console.dir(document.querySelector('span[style*="background-color: rgb(111, 228, 252);"]').parentNode)
-   var parent = document.querySelector('span[style*="background-color: rgb(111, 228, 252);"]').parentNode
-   parent.innerHTML = parent.innerText
-        //var elem = document.querySelector("#content p");
-        //var txt = elem.innerText || elem.textContent;
-        //elem.innerHTML = txt;
-   }
-  if (event.keyCode == 16) {
-    // Execute command if user presses the SHIFT button:
-    document.execCommand("BackColor", false, "#6fe4fc")
-  }
-  }
-  </script> */
-}
 
 /***/ }),
 
@@ -35034,6 +35127,35 @@ var _createSvgIcon = _interopRequireDefault(__webpack_require__(/*! ./utils/crea
 var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
   d: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
 }), 'Add');
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/@material-ui/icons/MoreVert.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/@material-ui/icons/MoreVert.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var _createSvgIcon = _interopRequireDefault(__webpack_require__(/*! ./utils/createSvgIcon */ "./node_modules/@material-ui/icons/utils/createSvgIcon.js"));
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+}), 'MoreVert');
 
 exports.default = _default;
 

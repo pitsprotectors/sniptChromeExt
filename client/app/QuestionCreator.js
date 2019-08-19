@@ -1,15 +1,21 @@
 import React, { useState } from "react";
-import { useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {
   Container,
   Button,
   FormControl,
   TextField,
-  Fab
+  Fab,
+  Select,
+  Menu,
+  MenuItem,
+  InputLabel
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
+import IconButton from "@material-ui/core/IconButton";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -47,6 +53,24 @@ const CREATE_QUESTION = gql`
   }
 `;
 
+const GET_PROJECT = gql`
+  query {
+    project(id: 2) {
+      id
+      name
+      questions {
+        id
+        content
+        snippets {
+          id
+        }
+      }
+    }
+  }
+`;
+
+const ITEM_HEIGHT = 60;
+
 const QuestionCreator = ({
   setAppStatus,
   setCurrentQuestion,
@@ -55,34 +79,59 @@ const QuestionCreator = ({
   const classes = useStyles();
 
   const [newQuestion, setNewQuestion] = useState("");
-  const [createQuestion, { data, loading, error, refetch }] = useMutation(
-    CREATE_QUESTION
-  );
+  const [
+    createQuestion,
+    { createQuestionData, loading, error, refetch }
+  ] = useMutation(CREATE_QUESTION);
 
-  if (data) {
-    setCurrentQuestion(data.createQuestion);
-    console.log("new question data: ", data.createQuestion);
+  const { data } = useQuery(GET_PROJECT);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  function handleClick(event) {
+    setAnchorEl(event.currentTarget);
   }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
+
+  function handleSelectQuestion(question) {
+    console.log("handleselectquestion");
+    console.log("selected quesiton", question);
+    setCurrentQuestion(question);
+    chrome.storage.local.set({ questionId: question.id }, function() {
+      console.log("Chrome Storage questionId saved as ", question.id);
+    });
+    setAnchorEl(null);
+  }
+
+  if (data) console.log(data);
+
   return (
     <Container>
       <form
         id="createQuestionForm"
         onSubmit={async e => {
           e.preventDefault();
-          console.log("is this happening?");
-          await createQuestion({
+          const { data } = await createQuestion({
             variables: { projectId: 1, content: newQuestion }
           });
           setAppStatus("createNewSnippets");
+          setCurrentQuestion(data.createQuestion);
+          chrome.storage.local.set(
+            { questionId: data.createQuestion.id },
+            function() {
+              console.log(
+                "Chrome Storage questionId saved as ",
+                data.createQuestion.id
+              );
+            }
+          );
         }}
         className={classes.questionForm}
       >
-        {/* <input
-          type="text"
-          id="newQuestion"
-          value={newQuestion}
-          onChange={e => setNewQuestion(e.target.value)}
-        /> */}
         <TextField
           id="outlined-with-placeholder"
           label="What would you like to learn today?"
@@ -93,18 +142,43 @@ const QuestionCreator = ({
           value={newQuestion}
           onChange={e => setNewQuestion(e.target.value)}
           inputProps={{
-            maxLength: 100
+            maxLength: 75
           }}
         />
-        {/* <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          form="createQuestionForm"
+        <IconButton
+          aria-label="more"
+          aria-controls="long-menu"
+          aria-haspopup="true"
+          onClick={handleClick}
         >
-          CREATE
-        </Button> */}
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={open}
+          onClose={handleClose}
+          PaperProps={{
+            style: {
+              maxHeight: ITEM_HEIGHT,
+              width: 200
+            }
+          }}
+        >
+          {data.project &&
+            data.project.questions.map(question => (
+              <MenuItem
+                key={question.id}
+                // selected={question.id === }
+                onClick={() => {
+                  handleSelectQuestion(question);
+                }}
+              >
+                {question.content}
+              </MenuItem>
+            ))}
+        </Menu>
         <Fab
           type="submit"
           color="primary"

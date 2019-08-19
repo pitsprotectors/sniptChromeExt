@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import QuestionCreator from "./QuestionCreator";
-import SnippetCreator from "./SnippetCreator";
 import QuestionDisplay from "./QuestionDisplay";
 import gql from "graphql-tag";
 import { Container, Paper, Typography } from "@material-ui/core";
@@ -14,20 +13,6 @@ const GET_PROJECTS = gql`
         id
         name
       }
-    }
-  }
-`;
-
-const CREATE_SNIPPET = gql`
-  mutation CreateNewSnippet(
-    $questionId: ID!
-    $content: String!
-    $url: String!
-  ) {
-    createSnippet(questionId: $questionId, content: $content, url: $url) {
-      id
-      content
-      questionId
     }
   }
 `;
@@ -67,6 +52,8 @@ const useStyles = makeStyles(theme => ({
     paddingTop: ".5rem"
   },
   paper: {
+    display: "flex",
+    justifyContent: "center",
     backgroundColor: "white",
     height: "5rem",
     width: "100%",
@@ -80,36 +67,21 @@ const App = () => {
   const [currentSnippet, setCurrentSnippet] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState("");
 
-  const [createSnippet, { data, loading, error }] = useMutation(CREATE_SNIPPET);
-
-  // chrome.runtime.onMessage.addListener(snippetReceiver);
-  // async function snippetReceiver(request, sender, sendResponse) {
-  //   console.log("message received! ", request.content);
-  //   console.log(currentQuestion);
-  //   // USE MUTATION TO CREATE A SNIPPET
-  //   // WHERE'S MY MUTATION FUNCTION?
-  //   await createSnippet({
-  //     variables: {
-  //       questionId: +currentQuestion.id,
-  //       content: request.content,
-  //       url: "www.google.com"
-  //     }
-  //   });
-  // }
-
   const classes = useStyles();
   return (
     <Container className={classes.container}>
-      {/* <SnippetCreator /> */}
       <Paper elevation={3} className={classes.paper}>
-        {appStatus === "createQuestion" ? (
+        {!currentQuestion.id ? (
           <QuestionCreator
             setAppStatus={setAppStatus}
             setCurrentQuestion={setCurrentQuestion}
             currentQuestion={currentQuestion}
           />
         ) : (
-          <QuestionDisplay currentQuestion={currentQuestion} />
+          <QuestionDisplay
+            currentQuestion={currentQuestion}
+            setCurrentQuestion={setCurrentQuestion}
+          />
         )}
         {/* <GetProjects /> */}
       </Paper>
@@ -118,33 +90,3 @@ const App = () => {
 };
 
 export default App;
-
-{
-  /* <body onkeydown="myFunction(event)">
-
-<h1>Document execCommand() Method</h1>
-
-<p>The executeCommand() method executes a specified command on selected text or section.</p>
-
-<h2>Select Text and Press Shift</h2>
-<p>Select some text in this page, and press the SHIFT button to make the selected text toggle between bold and normal.</p>
-
-<script>
-document.designMode = "on";
-
-function myFunction(event) {
-if(document.querySelector('span[style*="background-color: rgb(111, 228, 252);"]') !== null) {
-   console.dir(document.querySelector('span[style*="background-color: rgb(111, 228, 252);"]').parentNode)
-   var parent = document.querySelector('span[style*="background-color: rgb(111, 228, 252);"]').parentNode
-   parent.innerHTML = parent.innerText
-        //var elem = document.querySelector("#content p");
-        //var txt = elem.innerText || elem.textContent;
-        //elem.innerHTML = txt;
-   }
-  if (event.keyCode == 16) {
-    // Execute command if user presses the SHIFT button:
-    document.execCommand("BackColor", false, "#6fe4fc")
-  }
-}
-</script> */
-}

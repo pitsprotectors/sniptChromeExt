@@ -4,30 +4,35 @@
 
 /* experiment to quicken process */
 
-.snippet-iframe-container {
-  background-color: none;
-  left: 25%;
-  width: 50%;
-  padding: 0.5rem;
-  position: fixed;
+.snippet-highlighted-snippet {
+  background-color: rgb(255, 206, 191);
+  padding: 3px 0;
+}
+
+#snippet-content-container {
+  position: initial !important;
+  border: 0;
   bottom: 0;
-  text-align: center;
-  z-index: 4444444444;
-  transition: all 0.7s;
-  color: white;
-  height: 6.5rem;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: "none" !important;
-  border-width: 0 !important;
-  border-style: none !important;
-  border-color: none !important;
-  border-image: none !important;
+  left: 0;
+  height: 0;
+  width: 0;
+}
+
+#snippet-popup-container {
+  position: absolute;
+  z-index: 50;
+  opacity: 0;
+  transition: opacity .4s
+}
+
+#snippet-popup-container.active {
+  opacity: 1;
+  transition: opacity .4s
 }
 
 /* The real jazz */
 
-/* .snippet-iframe-container {
+.snippet-iframe-container {
   background-color: none;
   left: 25%;
   width: 50%;
@@ -46,7 +51,7 @@
   border-style: none !important;
   border-color: none !important;
   border-image: none !important;
-} */
+}
 
 .snippet-iframe-container.active {
   transition: all 0.7s;

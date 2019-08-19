@@ -5,7 +5,6 @@ module.exports = {
   // mode: isDev ? "development" : "production",
   mode: "development",
   entry: {
-    popup: "./client/popup/index.js",
     app: "./client/app/index.js",
     content: "./client/content/index.js"
   },
