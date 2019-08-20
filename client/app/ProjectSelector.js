@@ -5,17 +5,6 @@ import { Menu, MenuItem, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import BookIcon from "@material-ui/icons/book";
 
-const GET_PROJECTS = gql`
-  query projectList {
-    user(id: 1) {
-      projects {
-        id
-        name
-      }
-    }
-  }
-`;
-
 const useStyles = makeStyles(theme => ({
   container: {
     display: "flex",
@@ -51,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ProjectSelector = ({ setCurrentProject }) => {
+const ProjectSelector = ({ setCurrentProject, projectList }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -65,24 +54,9 @@ const ProjectSelector = ({ setCurrentProject }) => {
   }
 
   function handleSelectProject(project) {
-    setCurrentProject(project);
     setAnchorEl(null);
   }
 
-  useEffect(() => {
-    if (data) {
-      setCurrentProject(data.user.projects[0].id);
-      console.log("setcurrentproejct: ", data.user.projects[0].id);
-    }
-  }, []);
-
-  const { data, loading, error, refetch } = useQuery(GET_PROJECTS);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>ERROR :(</p>;
-  // if (data) {
-  //   setCurrentProject(data.user.projects[0].id);
-  //   console.log("setcurrentproejct: ", data.user.projects[0].id);
-  // }
   return (
     <Fragment>
       <IconButton
@@ -107,8 +81,8 @@ const ProjectSelector = ({ setCurrentProject }) => {
           }
         }}
       >
-        {data.user.projects.length &&
-          data.user.projects.map(project => (
+        {projectList &&
+          projectList.map(project => (
             <MenuItem
               key={project.id}
               onClick={() => {

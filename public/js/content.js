@@ -367,9 +367,6 @@ if (!global._babelPolyfill) {
 
 
 var handleActivateApp = function handleActivateApp(e) {
-  console.log(e.key);
-  console.log("working");
-
   if (e.key === "`") {
     var iframeDocument = document.getElementsByClassName("snippet-iframe-container")[0];
     !iframeDocument.classList.contains("active") ? iframeDocument.classList.add("active") : iframeDocument.classList.remove("active");
@@ -402,18 +399,7 @@ var body = document.getElementsByTagName("body")[0];
 body.addEventListener("keydown", handleActivateApp);
 body.appendChild(iframe);
 body.appendChild(contentContainer);
-contentContainer.appendChild(popupContainer); // listen to messages from popup.js
-
-chrome.runtime.onMessage.addListener(receiver); // receiving message from popup on start to activate iframe
-
-function receiver(request, sender, sendResponse) {
-  if (request.text === "footer") {
-    console.log("footer message received");
-    var iframeDocument = document.getElementsByClassName("snippet-iframe-container")[0];
-    iframeDocument.classList.add("active");
-  }
-} // Apollo client set up
-
+contentContainer.appendChild(popupContainer); // Apollo client set up
 
 var cache = new apollo_cache_inmemory__WEBPACK_IMPORTED_MODULE_3__["InMemoryCache"]();
 var link = new apollo_link_http__WEBPACK_IMPORTED_MODULE_4__["HttpLink"]({

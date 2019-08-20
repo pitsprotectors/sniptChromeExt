@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useQuery } from "@apollo/react-hooks";
 import ProjectSelector from "./ProjectSelector";
 import QuestionCreator from "./QuestionCreator";
 import QuestionDisplay from "./QuestionDisplay";
 import { Container, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLazyQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 const useStyles = makeStyles(theme => ({
@@ -54,32 +54,25 @@ const GET_PROJECTS = gql`
 `;
 
 const App = () => {
-  const [appStatus, setAppStatus] = useState("createQuestion");
+  const classes = useStyles();
   const [currentSnippet, setCurrentSnippet] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [currentProject, setCurrentProject] = useState("");
 
-  const [getProject, { loading, data, refetch }] = useLazyQuery(GET_PROJECTS);
+  const { data, loading, error } = useQuery(GET_PROJECTS);
 
-  useEffect(() => {
-    getProject();
-    console.log("componentdidmount");
-  }, []);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error!</div>;
 
-  if (data && data.user) {
-    setCurrentProject(data.user.projects[0].id);
-    console.log(data.user.projects[0].id);
-  }
-
-  const classes = useStyles();
   return (
     <Container className={classes.container}>
       <Paper elevation={3} className={classes.paper}>
-        <div>hello</div>
-        {/* <ProjectSelector setCurrentProject={setCurrentProject} />
+        <ProjectSelector
+          setCurrentProject={setCurrentProject}
+          projectList={data.user.projects}
+        />
         {!currentQuestion.id ? (
           <QuestionCreator
-            setAppStatus={setAppStatus}
             setCurrentQuestion={setCurrentQuestion}
             currentQuestion={currentQuestion}
             currentProject={currentProject}
@@ -89,7 +82,7 @@ const App = () => {
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentQuestion}
           />
-        )} */}
+        )}
       </Paper>
     </Container>
   );

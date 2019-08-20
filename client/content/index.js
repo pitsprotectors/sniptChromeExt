@@ -11,8 +11,6 @@ if (!global._babelPolyfill) {
 
 // document.addEventListener("keydown", logkey);
 const handleActivateApp = e => {
-  console.log(e.key);
-  console.log("working");
   if (e.key === "`") {
     const iframeDocument = document.getElementsByClassName(
       "snippet-iframe-container"
@@ -53,20 +51,6 @@ body.addEventListener("keydown", handleActivateApp);
 body.appendChild(iframe);
 body.appendChild(contentContainer);
 contentContainer.appendChild(popupContainer);
-
-// listen to messages from popup.js
-chrome.runtime.onMessage.addListener(receiver);
-
-// receiving message from popup on start to activate iframe
-function receiver(request, sender, sendResponse) {
-  if (request.text === "footer") {
-    console.log("footer message received");
-    const iframeDocument = document.getElementsByClassName(
-      "snippet-iframe-container"
-    )[0];
-    iframeDocument.classList.add("active");
-  }
-}
 
 // Apollo client set up
 const cache = new InMemoryCache();

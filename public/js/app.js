@@ -112,25 +112,12 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n  query projectList {\n    user(id: 1) {\n      projects {\n        id\n        name\n      }\n    }\n  }\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
 
 
 
 
-
-var GET_PROJECTS = graphql_tag__WEBPACK_IMPORTED_MODULE_2___default()(_templateObject());
 var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["makeStyles"])(function (theme) {
   return {
     container: {
@@ -169,7 +156,8 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["ma
 });
 
 var ProjectSelector = function ProjectSelector(_ref) {
-  var setCurrentProject = _ref.setCurrentProject;
+  var setCurrentProject = _ref.setCurrentProject,
+      projectList = _ref.projectList;
   var classes = useStyles();
 
   var _React$useState = react__WEBPACK_IMPORTED_MODULE_0___default.a.useState(null),
@@ -188,28 +176,8 @@ var ProjectSelector = function ProjectSelector(_ref) {
   }
 
   function handleSelectProject(project) {
-    setCurrentProject(project);
     setAnchorEl(null);
   }
-
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    if (data) {
-      setCurrentProject(data.user.projects[0].id);
-      console.log("setcurrentproejct: ", data.user.projects[0].id);
-    }
-  }, []);
-
-  var _useQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useQuery"])(GET_PROJECTS),
-      data = _useQuery.data,
-      loading = _useQuery.loading,
-      error = _useQuery.error,
-      refetch = _useQuery.refetch;
-
-  if (loading) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Loading...");
-  if (error) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "ERROR :("); // if (data) {
-  //   setCurrentProject(data.user.projects[0].id);
-  //   console.log("setcurrentproejct: ", data.user.projects[0].id);
-  // }
 
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["IconButton"], {
     "aria-label": "more",
@@ -232,7 +200,7 @@ var ProjectSelector = function ProjectSelector(_ref) {
         width: 200
       }
     }
-  }, data.user.projects.length && data.user.projects.map(function (project) {
+  }, projectList && projectList.map(function (project) {
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["MenuItem"], {
       key: project.id,
       onClick: function onClick() {
@@ -282,7 +250,7 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n  query GetProject($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      name\n      questions {\n        id\n        content\n        snippets {\n          id\n        }\n      }\n    }\n  }\n"]);
+  var data = _taggedTemplateLiteral(["\n  query {\n    project(id: 2) {\n      id\n      name\n      questions {\n        id\n        content\n        snippets {\n          id\n        }\n      }\n    }\n  }\n"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -348,8 +316,7 @@ var GET_PROJECT_DETAILS = graphql_tag__WEBPACK_IMPORTED_MODULE_2___default()(_te
 var ITEM_HEIGHT = 60;
 
 var QuestionCreator = function QuestionCreator(_ref) {
-  var setAppStatus = _ref.setAppStatus,
-      setCurrentQuestion = _ref.setCurrentQuestion,
+  var setCurrentQuestion = _ref.setCurrentQuestion,
       currentQuestion = _ref.currentQuestion,
       currentProject = _ref.currentProject;
   var classes = useStyles();
@@ -365,17 +332,10 @@ var QuestionCreator = function QuestionCreator(_ref) {
 
   _objectDestructuringEmpty(_useMutation2[1]);
 
-  var _useLazyQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useLazyQuery"])(GET_PROJECT_DETAILS, {
-    variables: {
-      projectId: currentProject.id
-    }
-  }),
-      _useLazyQuery2 = _slicedToArray(_useLazyQuery, 2),
-      getProject = _useLazyQuery2[0],
-      _useLazyQuery2$ = _useLazyQuery2[1],
-      loading = _useLazyQuery2$.loading,
-      data = _useLazyQuery2$.data,
-      refetch = _useLazyQuery2$.refetch;
+  var _useQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useQuery"])(GET_PROJECT_DETAILS),
+      loading = _useQuery.loading,
+      data = _useQuery.data,
+      error = _useQuery.error;
 
   var _React$useState = react__WEBPACK_IMPORTED_MODULE_0___default.a.useState(null),
       _React$useState2 = _slicedToArray(_React$useState, 2),
@@ -402,7 +362,8 @@ var QuestionCreator = function QuestionCreator(_ref) {
     setAnchorEl(null);
   }
 
-  if (data) console.log(data);
+  if (loading) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Loading...");
+  if (error) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Error!");
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Container"], {
     className: classes.questionFormContainer
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
@@ -413,8 +374,7 @@ var QuestionCreator = function QuestionCreator(_ref) {
       var _ref2 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee(e) {
-        var _ref3, data;
-
+        var res;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -423,23 +383,21 @@ var QuestionCreator = function QuestionCreator(_ref) {
                 _context.next = 3;
                 return createQuestion({
                   variables: {
-                    projectId: currentProject.id,
+                    projectId: 2,
                     content: newQuestion
                   }
                 });
 
               case 3:
-                _ref3 = _context.sent;
-                data = _ref3.data;
-                setAppStatus("createNewSnippets");
-                setCurrentQuestion(data.createQuestion);
+                res = _context.sent;
+                setCurrentQuestion(res.data.createQuestion);
                 chrome.storage.local.set({
-                  questionId: data.createQuestion.id
+                  questionId: res.data.createQuestion.id
                 }, function () {
-                  console.log("Chrome Storage questionId saved as ", data.createQuestion.id);
+                  console.log("Chrome Storage questionId saved as ", res.data.createQuestion.id);
                 });
 
-              case 8:
+              case 6:
               case "end":
                 return _context.stop();
             }
@@ -497,7 +455,7 @@ var QuestionCreator = function QuestionCreator(_ref) {
     color: "primary",
     "aria-label": "Add",
     className: classes.fab
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_Add__WEBPACK_IMPORTED_MODULE_5___default.a, null))), newQuestion);
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_Add__WEBPACK_IMPORTED_MODULE_5___default.a, null))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (QuestionCreator);
@@ -566,7 +524,7 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["ma
       paddingLeft: "1rem"
     },
     questionDisplayLabel: {
-      marginBottom: ".2rem"
+      marginBottom: 0
     },
     questionDisplayBookmarksIcon: {
       width: "4rem",
@@ -576,7 +534,7 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["ma
       margin: 0
     },
     questionDisplayQuestionContent: {
-      fontSize: "12px"
+      fontSize: "16px"
     }
   };
 });
@@ -683,12 +641,12 @@ var QuestionDisplay = function QuestionDisplay(_ref) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _ProjectSelector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ProjectSelector */ "./client/app/ProjectSelector.js");
-/* harmony import */ var _QuestionCreator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./QuestionCreator */ "./client/app/QuestionCreator.js");
-/* harmony import */ var _QuestionDisplay__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./QuestionDisplay */ "./client/app/QuestionDisplay.js");
-/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
-/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
-/* harmony import */ var _apollo_react_hooks__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @apollo/react-hooks */ "./node_modules/@apollo/react-hooks/lib/react-hooks.esm.js");
+/* harmony import */ var _apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @apollo/react-hooks */ "./node_modules/@apollo/react-hooks/lib/react-hooks.esm.js");
+/* harmony import */ var _ProjectSelector__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ProjectSelector */ "./client/app/ProjectSelector.js");
+/* harmony import */ var _QuestionCreator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./QuestionCreator */ "./client/app/QuestionCreator.js");
+/* harmony import */ var _QuestionDisplay__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./QuestionDisplay */ "./client/app/QuestionDisplay.js");
+/* harmony import */ var _material_ui_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @material-ui/core */ "./node_modules/@material-ui/core/esm/index.js");
+/* harmony import */ var _material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @material-ui/core/styles */ "./node_modules/@material-ui/core/esm/styles/index.js");
 /* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! graphql-tag */ "./node_modules/graphql-tag/src/index.js");
 /* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(graphql_tag__WEBPACK_IMPORTED_MODULE_7__);
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
@@ -719,7 +677,7 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 
-var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_5__["makeStyles"])(function (theme) {
+var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_6__["makeStyles"])(function (theme) {
   return {
     container: {
       display: "flex",
@@ -758,51 +716,46 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_5__["ma
 var GET_PROJECTS = graphql_tag__WEBPACK_IMPORTED_MODULE_7___default()(_templateObject());
 
 var App = function App() {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])("createQuestion"),
+  var classes = useStyles();
+
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
       _useState2 = _slicedToArray(_useState, 2),
-      appStatus = _useState2[0],
-      setAppStatus = _useState2[1];
+      currentSnippet = _useState2[0],
+      setCurrentSnippet = _useState2[1];
 
   var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
       _useState4 = _slicedToArray(_useState3, 2),
-      currentSnippet = _useState4[0],
-      setCurrentSnippet = _useState4[1];
+      currentQuestion = _useState4[0],
+      setCurrentQuestion = _useState4[1];
 
   var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
       _useState6 = _slicedToArray(_useState5, 2),
-      currentQuestion = _useState6[0],
-      setCurrentQuestion = _useState6[1];
+      currentProject = _useState6[0],
+      setCurrentProject = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
-      _useState8 = _slicedToArray(_useState7, 2),
-      currentProject = _useState8[0],
-      setCurrentProject = _useState8[1];
+  var _useQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useQuery"])(GET_PROJECTS),
+      data = _useQuery.data,
+      loading = _useQuery.loading,
+      error = _useQuery.error;
 
-  var _useLazyQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_6__["useLazyQuery"])(GET_PROJECTS),
-      _useLazyQuery2 = _slicedToArray(_useLazyQuery, 2),
-      getProject = _useLazyQuery2[0],
-      _useLazyQuery2$ = _useLazyQuery2[1],
-      loading = _useLazyQuery2$.loading,
-      data = _useLazyQuery2$.data,
-      refetch = _useLazyQuery2$.refetch;
-
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    getProject();
-    console.log("componentdidmount");
-  }, []);
-
-  if (data && data.user) {
-    setCurrentProject(data.user.projects[0].id);
-    console.log(data.user.projects[0].id);
-  }
-
-  var classes = useStyles();
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_4__["Container"], {
+  if (loading) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Loading...");
+  if (error) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Error!");
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_5__["Container"], {
     className: classes.container
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_4__["Paper"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_5__["Paper"], {
     elevation: 3,
     className: classes.paper
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "hello")));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ProjectSelector__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    setCurrentProject: setCurrentProject,
+    projectList: data.user.projects
+  }), !currentQuestion.id ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionCreator__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    setCurrentQuestion: setCurrentQuestion,
+    currentQuestion: currentQuestion,
+    currentProject: currentProject
+  }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_QuestionDisplay__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    currentQuestion: currentQuestion,
+    setCurrentQuestion: setCurrentQuestion
+  })));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (App);

@@ -62,8 +62,8 @@ const CREATE_QUESTION = gql`
 `;
 
 const GET_PROJECT_DETAILS = gql`
-  query GetProject($projectId: ID!) {
-    project(projectId: $projectId) {
+  query {
+    project(id: 2) {
       id
       name
       questions {
@@ -80,7 +80,6 @@ const GET_PROJECT_DETAILS = gql`
 const ITEM_HEIGHT = 60;
 
 const QuestionCreator = ({
-  setAppStatus,
   setCurrentQuestion,
   currentQuestion,
   currentProject
@@ -90,12 +89,7 @@ const QuestionCreator = ({
   const [newQuestion, setNewQuestion] = useState("");
   const [createQuestion, {}] = useMutation(CREATE_QUESTION);
 
-  const [getProject, { loading, data, refetch }] = useLazyQuery(
-    GET_PROJECT_DETAILS,
-    {
-      variables: { projectId: currentProject.id }
-    }
-  );
+  const { loading, data, error } = useQuery(GET_PROJECT_DETAILS);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -116,7 +110,8 @@ const QuestionCreator = ({
     setAnchorEl(null);
   }
 
-  if (data) console.log(data);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error!</div>;
 
   return (
     <Container className={classes.questionFormContainer}>
@@ -124,17 +119,16 @@ const QuestionCreator = ({
         id="createQuestionForm"
         onSubmit={async e => {
           e.preventDefault();
-          const { data } = await createQuestion({
-            variables: { projectId: currentProject.id, content: newQuestion }
+          const res = await createQuestion({
+            variables: { projectId: 2, content: newQuestion }
           });
-          setAppStatus("createNewSnippets");
-          setCurrentQuestion(data.createQuestion);
+          setCurrentQuestion(res.data.createQuestion);
           chrome.storage.local.set(
-            { questionId: data.createQuestion.id },
+            { questionId: res.data.createQuestion.id },
             function() {
               console.log(
                 "Chrome Storage questionId saved as ",
-                data.createQuestion.id
+                res.data.createQuestion.id
               );
             }
           );
@@ -199,7 +193,6 @@ const QuestionCreator = ({
           <AddIcon />
         </Fab>
       </form>
-      {newQuestion}
     </Container>
   );
 };
