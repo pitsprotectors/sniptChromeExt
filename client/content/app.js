@@ -66,12 +66,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-// chrome.storage.onChanged.addListener(function(changes, namespace) {
-//   if (changes.newSnippet.newValue)
-//     chrome.runtime.sendMessage({ message: "SNIPPETS_REFETCH" });
-//   setCurrentQuestionId(changes.questionId.newValue);
-// });
-
 const App = () => {
   const classes = useStyles();
 
@@ -131,11 +125,6 @@ const App = () => {
       });
       const newSnippetId = data.createSnippet.id;
       chrome.runtime.sendMessage({ message: "SNIPPETS_REFETCH" });
-
-      // chrome.storage.sync.set({ newSnippet: true }, function() {
-      //   console.log("set new snippet to true");
-      // });
-
       const selection = window
         .getSelection()
         .getRangeAt(0)
@@ -143,11 +132,9 @@ const App = () => {
 
       const newSpan = document.createElement("span");
       newSpan.appendChild(selection);
-
-      const highlightedSpan =
-        `<span class="snippet-highlighted-snippet pre-listener" id=${newSnippetId}>` +
-        newSpan.innerHTML +
-        "</span>";
+      const highlightedSpan = `<span class="snippet-highlighted-snippet pre-listener" id=${newSnippetId}>${
+        newSpan.innerHTML
+      }</span>`;
       document.designMode = "on";
       document.execCommand("insertHTML", false, highlightedSpan);
       document.designMode = "off";
