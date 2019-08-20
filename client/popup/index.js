@@ -17,10 +17,12 @@ const link = new createHttpLink({
 })
 const client = new ApolloClient({link, cache})
 const ME = gql`
-query me{
-  projects{
-    id
-    name
+query ME{
+  me{
+    projects{
+      id
+      name
+    }
   }
 }
 `
@@ -33,9 +35,9 @@ export default function NewTab() {
   const [snippets, setSnippets] = useState('')
   console.log("index", data)
   useEffect(() => {
-    if (data.projects && !project) {
-      setProject(data.projects[Math.floor(Math.random()*data.projects.length)])
-    }else if(!data.projects){
+    if (data.me && !project) {
+      setProject(data.me.projects[Math.floor(Math.random()*data.me.projects.length)])
+    }else if(!data.me){
       setProject(false)
     }
     //if (project.questions && !question) setQuestion(project.questions[Math.floor(Math.random()*project.questions.length)])
