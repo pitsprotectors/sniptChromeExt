@@ -1,6 +1,7 @@
 {
   "name": "Snippet Chrome Extension",
   "version": "1.0",
+
   "description": "Next-generation spaced repetition learning assistant",
   "permissions": ["storage", "activeTab", "contextMenus"],
   "browser_action": {
@@ -27,6 +28,13 @@
       "js": ["js/content.js"]
     }
   ],
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": false
+  },
+  "chrome_url_overrides" : {
+    "newtab": "popup.html"
+  },
   "web_accessible_resources": ["app.html"],
   "manifest_version": 2
 }

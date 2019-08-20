@@ -1,207 +1,79 @@
+import React, {useState, useMemo, useEffect}from 'react';
+import {render} from 'react-dom';
+import {ApolloProvider} from '@apollo/react-hooks'
+import {createHttpLink} from 'apollo-link-http'
+import {InMemoryCache} from 'apollo-cache-inmemory'
+import {ApolloClient} from 'apollo-client'
 
-import React from "react";
-import ReactDOM from "react-dom";
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { HttpLink } from "apollo-link-http";
-import { ApolloProvider } from "@apollo/react-hooks";
-import ApolloClient from "apollo-boost";
-import gql from "graphql-tag";
-import { Input, Container, Header, Button, Divider, Segment, List} from 'semantic-ui-react'
-import "babel-polyfill";
-import App from "./app";
-
-// const cache = new InMemoryCache();
-// const link = new HttpLink({
-//   uri: "http://localhost:4000/graphql"
-// });
-// const client = new ApolloClient({ link, cache });
-
-// // sending message upon popup to content script
-// export default async function notify() {
-//   await setTimeout(function() {
-//     chrome.notifications.create(
-//       {
-//         type: "basic",
-//         title: "Check your snipts",
-//         message: "It's time to learn! click here to check your snipts!"
-//       },
-//       (onClick = () => {
-//         chrome.tabs.create({ url: "http://localhost:4000" });
-//       })
-//     );
-//   }, 3000);
-// }
-
-// notify();
+import {useQuery} from '@apollo/react-hooks'
+import gql from 'graphql-tag'
+import Randomquestion from "./Randomquestion"
+//import Snippets from "./Snippets.js"
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
 
-ReactDOM.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
-  document.getElementById("container")
-);
-
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      currentHighlight: "",
-      projects: [],
-      selectedProject: "General",
-      questions:[],
-      selectedQuestion:"new"
-    };
-    this.syncStorageToState = this.syncStorageToState.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.onSelect= this.onSelect.bind(this)
-    this.onChange=this.onChange.bind(this)
-  }
-/////////////////////////////////////////////////
-  syncStorageToState() {
-    let bgpage = chrome.extension.getBackgroundPage();
-    let snipts = bgpage.snipts;
-    this.setState({currentHighlight:snipts})
-  }
-//////////////////////////////////////////////////
-  async handleSave(event) {
-    event.preventDefault()
-    let newQuestionId;
-    if(this.state.selectedQuestion==="new"){
-      const val = document.getElementById("myText").value
-      console.log(val)
-      const CREATE_QUESTION= gql`
-        mutation{
-          createQuestion(projectId: ${this.state.selectedProject}, content: "${val}"){
-            id
-          }
-        }
-      `
-      const RES = await client.mutate({
-        mutation: CREATE_QUESTION
-      });
-      console.log(RES)
-      newQuestionId= +RES.data.createQuestion.id
+const cache = new InMemoryCache()
+const link = new createHttpLink({
+  uri: 'http://localhost:4000/graphql'
+})
+const client = new ApolloClient({link, cache})
+const ME = gql`
+query ME{
+  me{
+    projects{
+      id
+      name
     }
-    else{
-      newQuestionId= +this.state.selectedQuestion
-    }
-    console.log(this.state.currentHighlight)
-    for(let i=0; i<this.state.currentHighlight.length; i++){
-      console.log("currentHighlight: ", this.state.currentHighlight[i])
-      const CREATE_SNIPPET = gql`
-        mutation{
-          createSnippet(questionId: ${newQuestionId}, content: "${this.state.currentHighlight[i]}", url: "www.google.com"){
-            id
-          }
-        }
-      `;
-      const { data } = await client.mutate({
-        mutation: CREATE_SNIPPET
-      });
-      console.log("data: ", data)
-    }
-
-    chrome.runtime.sendMessage({text: "clear"});
-    this.setState({ currentHighlight: "" });
-  }
-//////////////////////////////////////////////////
-  async componentDidMount() {
-    this.syncStorageToState()
-    const { data } = await client.query({
-      query: GET_PROJECTS
-    });
-    this.setState({
-      projects: data.user.projects
-    });
-
-  }
-//////////////////////////////////////////////////
-  async onSelect(event){
-    event.preventDefault();
-    console.log("are we here", event.target.value)
-    this.setState({selectedProject: event.target.value})
-    if(this.state.selectedProject!=="General"){
-      const GET_Questions = gql`
-      query {
-        project(id:${+this.state.selectedProject}) {
-          questions{
-            id
-            content
-          }
-        }
-      }
-    `;
-      const { data } = await client.query({
-        query: GET_Questions
-      });
-      this.setState({questions:data.project.questions})
-    }
-  }
-//////////////////////////////////////////////////
-  async onChange(event){
-    event.preventDefault();
-    this.setState({selectedQuestion: event.target.value})
-  }
-//////////////////////////////////////////////////
-  render() {
-    return (
-      <div>
-        <form onSubmit={this.handleSave}>
-
-          <label>Project Name:</label>
-
-          <select onChange={this.onSelect}>
-            <option value="General">------</option>
-            {this.state.projects.length && this.state.projects.map((project)=>{
-              return <option name={project.name} key={project.id} value={project.id}>{project.name}</option>
-            })}
-          </select>
-          <Divider hidden />
-
-
-          <div>
-           <label>Question:</label>
-            <select onChange={this.onChange}>
-              <option value="new">New Question</option>
-              {this.state.questions.length && this.state.questions.map((question)=>{
-                return(
-                  <option name={question.content} key={question.id} value={question.id}>{question.content}</option>
-                )
-              })
-              }
-            </select>
-            <Divider hidden />
-            {
-              this.state.selectedQuestion==="new"&&
-              <Input type="text" id="myText"></Input>
-            }
-          </div>
-            <Divider hidden />
-
-          <div>
-            <label>SNIPTS:</label>
-            {this.state.currentHighlight.map && this.state.currentHighlight.map((snipt)=>{
-              return(
-                <List.Item as='a'>
-                  <Container text>
-                  Snipt: {snipt}
-                  <Divider hidden></Divider>
-                  <Button>Delete</Button>
-                  </Container>
-                </List.Item>
-
-              )
-            })}
-          </div>
-          <Divider hidden />
-          <Button type = "submit">SAVE</Button>
-        </form>
-      </div>
-    );
   }
 }
+`
+const useStyles = makeStyles(theme => ({
+  root: {
+    padding: theme.spacing(3, 2),
+  },
+}));
 
-ReactDOM.render(<App />, document.getElementById("container"));
+export default function NewTab() {
+  const classes = useStyles();
+  const {data, loading, error}= useQuery(ME)
+  const [project, setProject] = useState('')
+  const [question, setQuestion] = useState('')
+  const [snippets, setSnippets] = useState('')
+  useEffect(() => {
+    if (data.me && !project) {
+      setProject(data.me.projects[Math.floor(Math.random()*data.me.projects.length)])
+    }else if(!data.me){
+      setProject(false)
+    }
+  })
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>ERROR: {error.message}</p>
+  return (
+    <Paper className={classes.root} display="flex" justifyContent="center" alignItems="center" alignItems="center">
+      <Typography variant="h5" component="h3">
+        Snipts
+      </Typography>
+      <Typography component="p">
+      {project?
+        <div>
+          <h2>This question comes from: {project.name}</h2>
+          
+          <Randomquestion projectId={project.id} setQuestion={setQuestion} setSnippets={setSnippets} question={question} snippets={snippets}/>
+        </div>
+        :
+        <p>Maybe...Just Maybe...You need to create a new Project and Ask Yourself some Qestions</p>
+      }
+    </Typography>
+    </Paper>
+  )
+}
+
+
+render(
+  <ApolloProvider client={client}>
+    <NewTab />
+  </ApolloProvider>, 
+  window.document.getElementById('container'));
 
