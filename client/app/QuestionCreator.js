@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {
   Container,
@@ -24,6 +24,9 @@ const useStyles = makeStyles(theme => ({
   input: {
     display: "none"
   },
+  questionFormContainer: {
+    paddingLeft: 0
+  },
   questionForm: {
     display: "flex",
     flexDirection: "row",
@@ -32,11 +35,16 @@ const useStyles = makeStyles(theme => ({
     margin: ".25rem"
   },
   textField: {
-    width: "25rem",
-    margin: theme.spacing(1)
+    width: "100%",
+    margin: theme.spacing(1),
+    marginLeft: 0
   },
   fab: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
+    width: "4.5rem"
+  },
+  verticalIcon: {
+    padding: 0
   }
 }));
 
@@ -53,7 +61,7 @@ const CREATE_QUESTION = gql`
   }
 `;
 
-const GET_PROJECT = gql`
+const GET_PROJECT_DETAILS = gql`
   query {
     project(id: 2) {
       id
@@ -72,19 +80,16 @@ const GET_PROJECT = gql`
 const ITEM_HEIGHT = 60;
 
 const QuestionCreator = ({
-  setAppStatus,
   setCurrentQuestion,
-  currentQuestion
+  currentQuestion,
+  currentProject
 }) => {
   const classes = useStyles();
 
   const [newQuestion, setNewQuestion] = useState("");
-  const [
-    createQuestion,
-    { createQuestionData, loading, error, refetch }
-  ] = useMutation(CREATE_QUESTION);
+  const [createQuestion, {}] = useMutation(CREATE_QUESTION);
 
-  const { data } = useQuery(GET_PROJECT);
+  const { loading, data, error } = useQuery(GET_PROJECT_DETAILS);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -98,8 +103,6 @@ const QuestionCreator = ({
   }
 
   function handleSelectQuestion(question) {
-    console.log("handleselectquestion");
-    console.log("selected quesiton", question);
     setCurrentQuestion(question);
     chrome.storage.local.set({ questionId: question.id }, function() {
       console.log("Chrome Storage questionId saved as ", question.id);
@@ -107,25 +110,25 @@ const QuestionCreator = ({
     setAnchorEl(null);
   }
 
-  if (data) console.log(data);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error!</div>;
 
   return (
-    <Container>
+    <Container className={classes.questionFormContainer}>
       <form
         id="createQuestionForm"
         onSubmit={async e => {
           e.preventDefault();
-          const { data } = await createQuestion({
-            variables: { projectId: 1, content: newQuestion }
+          const res = await createQuestion({
+            variables: { projectId: 2, content: newQuestion }
           });
-          setAppStatus("createNewSnippets");
-          setCurrentQuestion(data.createQuestion);
+          setCurrentQuestion(res.data.createQuestion);
           chrome.storage.local.set(
-            { questionId: data.createQuestion.id },
+            { questionId: res.data.createQuestion.id },
             function() {
               console.log(
                 "Chrome Storage questionId saved as ",
-                data.createQuestion.id
+                res.data.createQuestion.id
               );
             }
           );
@@ -150,6 +153,7 @@ const QuestionCreator = ({
           aria-controls="long-menu"
           aria-haspopup="true"
           onClick={handleClick}
+          className={classes.verticalIcon}
         >
           <MoreVertIcon />
         </IconButton>
@@ -166,7 +170,8 @@ const QuestionCreator = ({
             }
           }}
         >
-          {data.project &&
+          {data &&
+            data.project &&
             data.project.questions.map(question => (
               <MenuItem
                 key={question.id}
@@ -188,7 +193,6 @@ const QuestionCreator = ({
           <AddIcon />
         </Fab>
       </form>
-      {newQuestion}
     </Container>
   );
 };

@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: "1rem"
   },
   questionDisplayLabel: {
-    marginBottom: ".2rem"
+    marginBottom: 0
   },
   questionDisplayBookmarksIcon: {
     width: "4rem",
@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     margin: 0
   },
   questionDisplayQuestionContent: {
-    fontSize: "12px"
+    fontSize: "16px"
   }
 }));
 

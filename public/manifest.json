@@ -2,18 +2,11 @@
   "name": "Snippet Chrome Extension",
   "version": "1.0",
   "description": "Next-generation spaced repetition learning assistant",
-  "permissions": ["storage", "activeTab", "contextMenus", "commands"],
+  "permissions": ["storage", "activeTab", "contextMenus"],
   "browser_action": {
     "default_icon": "logo.png"
   },
   "commands": {
-    "toggle-app-activity": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+8"
-      },
-      "description": "toggle-app-activity",
-      "global": true
-    },
     "_execute_browser_action": {
       "suggested_key": {
         "windows": "Ctrl+Shift+Y",
