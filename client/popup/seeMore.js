@@ -25,7 +25,7 @@ export default function SeeMore({questionId,snippets}) {
                 onClick={
                     ()=>{
                         seeMore()
-                        alert("This problem's learning period begins now")
+                        alert("Feature In Development!! Coming soon")
                     }
                 }
                 >I have no clue what the answer is, and I need to know this

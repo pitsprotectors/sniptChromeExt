@@ -42,14 +42,12 @@ export default function NewTab() {
   const [project, setProject] = useState('')
   const [question, setQuestion] = useState('')
   const [snippets, setSnippets] = useState('')
-  console.log("index", data)
   useEffect(() => {
     if (data.me && !project) {
       setProject(data.me.projects[Math.floor(Math.random()*data.me.projects.length)])
     }else if(!data.me){
       setProject(false)
     }
-    //if (project.questions && !question) setQuestion(project.questions[Math.floor(Math.random()*project.questions.length)])
   })
   if (loading) return <p>Loading...</p>
   if (error) return <p>ERROR: {error.message}</p>
@@ -62,6 +60,7 @@ export default function NewTab() {
       {project?
         <div>
           <h2>This question comes from: {project.name}</h2>
+          
           <Randomquestion projectId={project.id} setQuestion={setQuestion} setSnippets={setSnippets} question={question} snippets={snippets}/>
         </div>
         :
@@ -91,23 +90,3 @@ render(
   </ApolloProvider>, 
   window.document.getElementById('container'));
 
-
-
-
-  // {question ? 
-  // <div>
-  //   <h3>Question:{question.content}</h3>
-    
-  //   {
-  //     snippets?
-  //     snippets.map((s)=>{
-  //         return(
-  //             <p>{s.content}</p>
-  //         )
-  //     }):
-  //     <button onClick={()=>{setSnippets(question.snippets)}}>What was my answer?</button>
-  //   }
-  // </div>
-  // :
-  // <p>You Don't Have Any Pending Question Under This Project</p>
-  // }

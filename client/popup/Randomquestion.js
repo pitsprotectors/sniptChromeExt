@@ -22,7 +22,7 @@ export default function Randomquestion({projectId, setQuestion, setSnippets,ques
         }else if(!data.show){
           setQuestion(false)
         }
-        //if (project.questions && !question) setQuestion(project.questions[Math.floor(Math.random()*project.questions.length)])
+        console.log(question.id)
       })
     return (
         <div>
@@ -33,7 +33,7 @@ export default function Randomquestion({projectId, setQuestion, setSnippets,ques
                 <Snippets questionId= {question.id} setSnippets={setSnippets} snippets={snippets} />
             </div>
             :
-            <p>My friend this Project is cleaned</p>
+            <p>My friend this Project has no pending question for today</p>
             }
         </div>
     )
