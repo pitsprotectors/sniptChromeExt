@@ -55,7 +55,6 @@ const GET_PROJECTS = gql`
 
 const App = () => {
   const classes = useStyles();
-  const [currentSnippet, setCurrentSnippet] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [currentProject, setCurrentProject] = useState("");
 

@@ -166,7 +166,7 @@ const QuestionCreator = ({
           PaperProps={{
             style: {
               maxHeight: ITEM_HEIGHT,
-              width: 200
+              width: "410px"
             }
           }}
         >
@@ -178,6 +178,9 @@ const QuestionCreator = ({
                 // selected={question.id === }
                 onClick={() => {
                   handleSelectQuestion(question);
+                }}
+                style={{
+                  width: "400px"
                 }}
               >
                 {question.content}

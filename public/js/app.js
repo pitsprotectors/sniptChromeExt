@@ -439,7 +439,7 @@ var QuestionCreator = function QuestionCreator(_ref) {
     PaperProps: {
       style: {
         maxHeight: ITEM_HEIGHT,
-        width: 200
+        width: "410px"
       }
     }
   }, data && data.project && data.project.questions.map(function (question) {
@@ -448,6 +448,9 @@ var QuestionCreator = function QuestionCreator(_ref) {
       ,
       onClick: function onClick() {
         handleSelectQuestion(question);
+      },
+      style: {
+        width: "400px"
       }
     }, question.content);
   })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Fab"], {
@@ -535,6 +538,10 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_4__["ma
     },
     questionDisplayQuestionContent: {
       fontSize: "16px"
+    },
+    bookIconSvg: {
+      color: "#000000",
+      padding: 0
     }
   };
 });
@@ -617,13 +624,17 @@ var QuestionDisplay = function QuestionDisplay(_ref) {
     className: classes.questionDisplayQuestionContent
   }, currentQuestion.content)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Container"], {
     className: classes.questionDisplayBookmarksIcon
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    href: "http://localhost:4000/projects",
+    target: "_blank"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_3__["Badge"], {
     className: classes.questionDisplayBookmarksIconBadge,
     badgeContent: !currentQuestion.id ? 0 : currentQuestion.snippets.length,
     color: "secondary"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_bookmarks__WEBPACK_IMPORTED_MODULE_5___default.a, {
-    fontSize: "large"
-  }))));
+    fontSize: "large",
+    className: classes.bookIconSvg
+  })))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (QuestionDisplay);
@@ -720,18 +731,13 @@ var App = function App() {
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
       _useState2 = _slicedToArray(_useState, 2),
-      currentSnippet = _useState2[0],
-      setCurrentSnippet = _useState2[1];
+      currentQuestion = _useState2[0],
+      setCurrentQuestion = _useState2[1];
 
   var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
       _useState4 = _slicedToArray(_useState3, 2),
-      currentQuestion = _useState4[0],
-      setCurrentQuestion = _useState4[1];
-
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(""),
-      _useState6 = _slicedToArray(_useState5, 2),
-      currentProject = _useState6[0],
-      setCurrentProject = _useState6[1];
+      currentProject = _useState4[0],
+      setCurrentProject = _useState4[1];
 
   var _useQuery = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_1__["useQuery"])(GET_PROJECTS),
       data = _useQuery.data,

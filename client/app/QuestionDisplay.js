@@ -29,6 +29,10 @@ const useStyles = makeStyles(theme => ({
   },
   questionDisplayQuestionContent: {
     fontSize: "16px"
+  },
+  bookIconSvg: {
+    color: "#000000",
+    padding: 0
   }
 }));
 
@@ -83,15 +87,17 @@ const QuestionDisplay = ({ currentQuestion, setCurrentQuestion }) => {
         </Typography>
       </Container>
       <Container className={classes.questionDisplayBookmarksIcon}>
-        <Badge
-          className={classes.questionDisplayBookmarksIconBadge}
-          badgeContent={
-            !currentQuestion.id ? 0 : currentQuestion.snippets.length
-          }
-          color="secondary"
-        >
-          <BookmarksIcon fontSize="large" />
-        </Badge>
+        <a href="http://localhost:4000/projects" target="_blank">
+          <Badge
+            className={classes.questionDisplayBookmarksIconBadge}
+            badgeContent={
+              !currentQuestion.id ? 0 : currentQuestion.snippets.length
+            }
+            color="secondary"
+          >
+            <BookmarksIcon fontSize="large" className={classes.bookIconSvg} />
+          </Badge>
+        </a>
       </Container>
     </Container>
   );

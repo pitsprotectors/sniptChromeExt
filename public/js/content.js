@@ -192,11 +192,7 @@ var useStyles = Object(_material_ui_core_styles__WEBPACK_IMPORTED_MODULE_3__["ma
       }
     }
   };
-}); // chrome.storage.onChanged.addListener(function(changes, namespace) {
-//   if (changes.newSnippet.newValue)
-//     chrome.runtime.sendMessage({ message: "SNIPPETS_REFETCH" });
-//   setCurrentQuestionId(changes.questionId.newValue);
-// });
+});
 
 var App = function App() {
   var classes = useStyles();
@@ -291,14 +287,11 @@ var App = function App() {
               newSnippetId = data.createSnippet.id;
               chrome.runtime.sendMessage({
                 message: "SNIPPETS_REFETCH"
-              }); // chrome.storage.sync.set({ newSnippet: true }, function() {
-              //   console.log("set new snippet to true");
-              // });
-
+              });
               selection = window.getSelection().getRangeAt(0).cloneContents();
               newSpan = document.createElement("span");
               newSpan.appendChild(selection);
-              highlightedSpan = "<span class=\"snippet-highlighted-snippet pre-listener\" id=".concat(newSnippetId, ">") + newSpan.innerHTML + "</span>";
+              highlightedSpan = "<span class=\"snippet-highlighted-snippet pre-listener\" id=".concat(newSnippetId, ">").concat(newSpan.innerHTML, "</span>");
               document.designMode = "on";
               document.execCommand("insertHTML", false, highlightedSpan);
               document.designMode = "off";
