@@ -1,6 +1,7 @@
 import React, {useState, useMemo, useEffect} from 'react'
 import {useQuery} from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import SeeMore from  "./seeMore"
  
 export default function Snippets({questionId, setSnippets, snippets}) {
     const GET_QUESTION_DETAILS = gql`
@@ -12,25 +13,15 @@ export default function Snippets({questionId, setSnippets, snippets}) {
         }
     }
     `
-    const {data, loading, error, refetch} = useQuery(GET_QUESTION_DETAILS, {
+    const {data, loading, error} = useQuery(GET_QUESTION_DETAILS, {
         variables: {questionId: questionId}
       })
-    console.log("lolo:",data.question)
-    //const [s, setS] = useState('')
-    // useEffect(() => {
-    //     if (data.snippets && !s) setS(data.snippets)
-    //   })
-    // if (loading) return <p>Loading...</p>
-    // if (error) return <p>ERROR: {error.message}</p>
      return (
          <div>
             {
                 snippets?
-                snippets.map((s)=>{
-                    return(
-                        <p>{s.content}</p>
-                    )
-                }):
+                <SeeMore questionId={questionId} snippets={snippets} />
+                :
                 <button onClick={()=>{
                      setSnippets(data.question.snippets)
                 }}>What was my answer?</button>

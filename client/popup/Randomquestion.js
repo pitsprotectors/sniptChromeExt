@@ -12,12 +12,12 @@ query onlyshow($projectId: ID!){
 }
 `
 export default function Randomquestion({projectId, setQuestion, setSnippets,question,snippets}) {
-    const {data, loading, error}= useQuery(ONLYSHOW,{
+    const {data, loading, error, refetch}= useQuery(ONLYSHOW,{
         variables: {projectId: projectId}
     })
     useEffect(() => {
-        console.log("randomequestion?",data)
-        if (data.show && !question) {
+        if(data === undefined){console.log("randomequestion?",data)}
+        else if (data.show && !question) {
           setQuestion(data.show[Math.floor(Math.random()*data.show.length)])
         }else if(!data.show){
           setQuestion(false)
@@ -30,7 +30,7 @@ export default function Randomquestion({projectId, setQuestion, setSnippets,ques
             {question?
             <div>
                 <h3>Question:{question.content}</h3>
-                <Snippets questionId= {question.id} setSnippets={setSnippets} snippets={snippets}/>
+                <Snippets questionId= {question.id} setSnippets={setSnippets} snippets={snippets} />
             </div>
             :
             <p>My friend this Project is cleaned</p>

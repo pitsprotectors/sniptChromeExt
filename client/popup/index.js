@@ -10,6 +10,10 @@ import {useQuery} from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import Randomquestion from "./Randomquestion"
 //import Snippets from "./Snippets.js"
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+
 
 const cache = new InMemoryCache()
 const link = new createHttpLink({
@@ -26,9 +30,14 @@ query ME{
   }
 }
 `
-
+const useStyles = makeStyles(theme => ({
+  root: {
+    padding: theme.spacing(3, 2),
+  },
+}));
 
 export default function NewTab() {
+  const classes = useStyles();
   const {data, loading, error}= useQuery(ME)
   const [project, setProject] = useState('')
   const [question, setQuestion] = useState('')
@@ -45,8 +54,11 @@ export default function NewTab() {
   if (loading) return <p>Loading...</p>
   if (error) return <p>ERROR: {error.message}</p>
   return (
-    <div>
-      <h1>Snipts</h1>
+    <Paper className={classes.root} display="flex" justifyContent="center" alignItems="center" alignItems="center">
+      <Typography variant="h5" component="h3">
+        Snipts
+      </Typography>
+      <Typography component="p">
       {project?
         <div>
           <h2>This question comes from: {project.name}</h2>
@@ -55,8 +67,20 @@ export default function NewTab() {
         :
         <p>Maybe...Just Maybe...You need to create a new Project and Ask Yourself some Qestions</p>
       }
+    </Typography>
+    </Paper>
+    // <div>
+    //   <h1>Snipts</h1>
+    //   {project?
+    //     <div>
+    //       <h2>This question comes from: {project.name}</h2>
+    //       <Randomquestion projectId={project.id} setQuestion={setQuestion} setSnippets={setSnippets} question={question} snippets={snippets}/>
+    //     </div>
+    //     :
+    //     <p>Maybe...Just Maybe...You need to create a new Project and Ask Yourself some Qestions</p>
+    //   }
 
-    </div>
+    // </div>
   )
 }
 
