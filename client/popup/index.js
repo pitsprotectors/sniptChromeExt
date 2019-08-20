@@ -1,4 +1,3 @@
-//import NewTab from './pages/new-tab';
 import React, {useState, useMemo, useEffect}from 'react';
 import {render} from 'react-dom';
 import {ApolloProvider} from '@apollo/react-hooks'
@@ -68,18 +67,6 @@ export default function NewTab() {
       }
     </Typography>
     </Paper>
-    // <div>
-    //   <h1>Snipts</h1>
-    //   {project?
-    //     <div>
-    //       <h2>This question comes from: {project.name}</h2>
-    //       <Randomquestion projectId={project.id} setQuestion={setQuestion} setSnippets={setSnippets} question={question} snippets={snippets}/>
-    //     </div>
-    //     :
-    //     <p>Maybe...Just Maybe...You need to create a new Project and Ask Yourself some Qestions</p>
-    //   }
-
-    // </div>
   )
 }
 

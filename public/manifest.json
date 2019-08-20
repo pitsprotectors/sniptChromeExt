@@ -1,12 +1,30 @@
 {
-  "name": "testing",
+  "name": "Snippet Chrome Extension",
   "version": "1.0",
-  "description": "yoyoyo",
-  "permissions": ["storage", "activeTab", "contextMenus", "notifications"],
 
+  "description": "Next-generation spaced repetition learning assistant",
+  "permissions": ["storage", "activeTab", "contextMenus"],
+  "browser_action": {
+    "default_icon": "logo.png"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y",
+        "chromeos": "Ctrl+Shift+U",
+        "linux": "Ctrl+Shift+J"
+      }
+    }
+  },
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": false
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "css": ["css/content.css"],
       "js": ["js/content.js"]
     }
   ],
@@ -17,5 +35,6 @@
   "chrome_url_overrides" : {
     "newtab": "popup.html"
   },
+  "web_accessible_resources": ["app.html"],
   "manifest_version": 2
 }
